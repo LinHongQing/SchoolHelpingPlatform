@@ -1,0 +1,375 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../assets/admin/lib/html5shiv.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="../assets/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>添加用户</title>
+</head>
+<body>
+<article class="page-container">
+	<form class="form form-horizontal" id="form-user-add">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>学号 / 工号：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="输入学号 / 工号" id="num" name="num">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>姓名：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="输入名称" id="name" name="name">
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>学院：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" style="width:150px;">
+				<select id="academyuid" name="academyuid" class="select" size="1" onchange="init_user_course()">
+					<option value="-1">请选择学院</option>
+				</select>
+			</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>专业：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" style="width:150px;">
+				<select id="courseuid" name="courseuid" class="select" size="1">
+					<option value="-1">请选择专业</option>
+				</select>
+			</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>学年：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" style="width:150px;">
+				<select id="gradeuid" name="gradeuid" class="select" size="1">
+					<option value="-1">请选择学年</option>
+				</select>
+			</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>位置：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span class="select-box" style="width:150px;">
+				<select id="locationuid" name="locationuid" class="select" size="1">
+					<option value="-1">请选择位置</option>
+				</select>
+			</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+			<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+		</div>
+	</div>
+	</form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../assets/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="../assets/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../assets/admin/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	init_user_academy();
+	init_user_grade();
+	init_user_location();
+	
+	$.validator.addMethod("checkSelected", function(value, element, param) {
+		if (value == "-1")
+			return false;
+		else
+			return true;
+	}, "请选择有效的选项");
+	
+	$("#form-user-add").validate({
+		rules: {
+			"name": {
+				required:  true,
+				minlength: 2,
+				maxlength: 16
+			},
+			"num": {
+				required: true,
+				remote: {
+					url: "check.action",
+					type: "post",
+					dataType: "json",
+					data: {
+						num: function() {
+							return $("#num").val();
+						},
+						t: "num"
+					},
+					dataFilter: function(data) { // 判断控制器返回的内容
+						data = $.parseJSON(data);
+						if (data.msgType == "success") {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				}
+			},
+			"academyuid": {
+				required: true,
+				checkSelected: true
+			},
+			"courseuid": {
+				required: true,
+				checkSelected: true
+			},
+			"gradeuid": {
+				required: true,
+				checkSelected: true
+			},
+			"locationuid": {
+				required: true,
+				checkSelected: true
+			}
+		},
+		messages: {
+			"name": "请输入姓名",
+			"num": {
+				required: "请输入学号 / 工号",
+				remote: "学号 / 工号已存在"
+			}
+		},
+		onkeyup: false,
+		focusCleanup: true,
+		success: "valid",
+		submitHandler: function(form) {
+			var params = $("#form-user-add").serialize();
+			$.ajax({
+				type: "post",
+				data: params,
+				dataType: "json",
+				url: "user-save.action",
+				success: function(result) {
+					if (result.msgType == "success") {
+						layer.msg("保存成功", {icon: 1, time: 1000});
+					} else {
+						layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				},
+                error: function() {
+					layer.msg("connection error!",{icon:2,time:1000});
+				}
+			});
+		}
+	});
+});
+
+function init_user_academy() {
+	var hint;
+	$.ajax({
+		url: "init.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			t: "academy"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#academyuid").append("<option value=\"" + value.uid + "\">" + value.name + "</option>");
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+function init_user_course() {
+	var hint;
+	var academyuid = $("#academyuid").val();
+	if (academyuid == "-1") {
+		return;
+	}
+	$.ajax({
+		url: "init.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			t: "course",
+			uid: academyuid
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$("#courseuid").empty();
+			$.each(content, function(index, value) {
+				$("#courseuid").append("<option value=\"" + value.uid + "\">" + value.name + "</option>");
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+function init_user_grade() {
+	var hint;
+	$.ajax({
+		url: "init.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			t: "grade"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#gradeuid").append("<option value=\"" + value.uid + "\">" + value.name + "</option>");
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+function init_user_location() {
+	var hint;
+	$.ajax({
+		url: "init.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			t: "location"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#locationuid").append("<option value=\"" + value.uid + "\">" + value.name + "</option>");
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

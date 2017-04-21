@@ -1,0 +1,7 @@
+.assistant-user-list{ border:solid 1px #eee;}
+.assistant-user-list > dt{ background-color:#efefef;padding:5px 10px}
+.assistant-user-list > dd{ padding:10px; padding-left:30px}
+.assistant-user-list > dd > dl{ border-bottom:solid 1px #eee; padding:5px 0}
+.assistant-user-list > dd > dl > dt{ display:inline-block;float:left;white-space:nowrap;width:100px}
+.assistant-user-list > dd > dl > dd{ margin-left:100px;}
+.assistant-user-list > dd > dl > dd > label{ padding-right:10px}

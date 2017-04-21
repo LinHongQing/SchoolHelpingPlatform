@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="admin"></property>
+	</bean>
+	
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+				<!-- <prop key="hibernate.show_sql">true</prop> -->
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>pojo/Solve.hbm.xml</value>
+				<value>pojo/Complaintrequest.hbm.xml</value>
+				<value>pojo/Grade.hbm.xml</value>
+				<value>pojo/Resource.hbm.xml</value>
+				<value>pojo/Problem.hbm.xml</value>
+				<value>pojo/Term.hbm.xml</value>
+				<value>pojo/Academy.hbm.xml</value>
+				<value>pojo/Course.hbm.xml</value>
+				<value>pojo/Problemtype.hbm.xml</value>
+				<value>pojo/Qualificationtype.hbm.xml</value>
+				<value>pojo/Role.hbm.xml</value>
+				<value>pojo/Admin.hbm.xml</value>
+				<value>pojo/Location.hbm.xml</value>
+				<value>pojo/Privilege.hbm.xml</value>
+				<value>pojo/Qualificationrequest.hbm.xml</value>
+				<value>pojo/User.hbm.xml</value>
+				<value>pojo/Creditvaluelog.hbm.xml</value>
+				<value>pojo/Userloginlog.hbm.xml</value>
+				<value>pojo/Adminloginlog.hbm.xml</value></list>
+		</property>
+	</bean>
+	<bean id="userDao" class="dao.impl.UserDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="userService" class="service.impl.UserServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="userDao" ref="userDao"/>
+	</bean>
+	<bean id="adminDao" class="dao.impl.AdminDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="adminService" class="service.impl.AdminServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="adminDao" ref="adminDao"/>
+	</bean>
+	<bean id="academyDao" class="dao.impl.AcademyDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="academyService" class="service.impl.AcademyServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="academyDao" ref="academyDao"/>
+	</bean>
+	<bean id="courseDao" class="dao.impl.CourseDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="courseService" class="service.impl.CourseServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="courseDao" ref="courseDao"/>
+	</bean>
+	<bean id="gradeDao" class="dao.impl.GradeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="gradeService" class="service.impl.GradeServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="gradeDao" ref="gradeDao"/>
+	</bean>
+	<bean id="locationDao" class="dao.impl.LocationDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="locationService" class="service.impl.LocationServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="locationDao" ref="locationDao"/>
+	</bean>
+	<bean id="termDao" class="dao.impl.TermDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="termService" class="service.impl.TermServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="termDao" ref="termDao"/>
+	</bean>
+	<bean id="roleDao" class="dao.impl.RoleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="roleService" class="service.impl.RoleServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="roleDao" ref="roleDao"/>
+	</bean>
+	<bean id="privilegeDao" class="dao.impl.PrivilegeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="privilegeService" class="service.impl.PrivilegeServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="privilegeDao" ref="privilegeDao"/>
+	</bean>
+	<bean id="qualificationtypeDao" class="dao.impl.QualificationtypeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="qualificationtypeService" class="service.impl.QualificationtypeServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="qualificationtypeDao" ref="qualificationtypeDao"/>
+	</bean>
+	<bean id="problemtypeDao" class="dao.impl.ProblemtypeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="problemtypeService" class="service.impl.ProblemtypeServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="problemtypeDao" ref="problemtypeDao"/>
+	</bean>
+	<bean id="resourceDao" class="dao.impl.ResourceDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="resourceService" class="service.impl.ResourceServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="resourceDao" ref="resourceDao"/>
+	</bean>
+	<bean id="creditvaluelogDao" class="dao.impl.CreditvaluelogDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="creditvaluelogService" class="service.impl.CreditvaluelogServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="creditvaluelogDao" ref="creditvaluelogDao"/>
+	</bean>
+	<bean id="complaintrequestDao" class="dao.impl.ComplaintrequestDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="complaintrequestService" class="service.impl.ComplaintrequestServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="complaintrequestDao" ref="complaintrequestDao"/>
+	</bean>
+	<bean id="userloginlogDao" class="dao.impl.UserloginlogDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="userloginlogService" class="service.impl.UserloginlogServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="userloginlogDao" ref="userloginlogDao"/>
+	</bean>
+	<bean id="adminloginlogDao" class="dao.impl.AdminloginlogDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="adminloginlogService" class="service.impl.AdminloginlogServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="adminloginlogDao" ref="adminloginlogDao"/>
+	</bean>
+	<bean id="qualificationrequestDao" class="dao.impl.QualificationrequestDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="qualificationrequestService" class="service.impl.QualificationrequestServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="qualificationrequestDao" ref="qualificationrequestDao"/>
+	</bean>
+	<bean id="problemDao" class="dao.impl.ProblemDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="problemService" class="service.impl.ProblemServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="problemDao" ref="problemDao"/>
+	</bean>
+	<bean id="solveDao" class="dao.impl.SolveDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<bean id="solveService" class="service.impl.SolveServiceImpl" abstract="false" lazy-init="default" autowire="default">
+		<property name="solveDao" ref="solveDao"/>
+	</bean>
+</beans>

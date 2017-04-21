@@ -1,0 +1,535 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.min.css" />
+<!--[if lt IE 9]>
+<link href="static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>校园互助平台</title>
+</head>
+<body>
+<header class="navbar-wrapper">
+	<div class="navbar navbar-black navbar-fixed-top">
+		<div class="container-fluid cl">
+			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="#">校园互助平台</a>
+			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+ 				<ul class="cl nologin">
+					<li>
+						<a href="#" onclick="user_login();"><i class="Hui-iconfont">&#xe60d;</i>登录</a>
+						<a href="#" onclick="user_register();"><i class="Hui-iconfont">&#xe607;</i>注册</a>
+					</li>
+				</ul>
+				<ul class="cl login" style="display:none">
+					<li class="dropDown dropDown_hover">
+						<a href="#" class="dropDown_A"><span id="user-name">学生昵称</span> <i class="Hui-iconfont">&#xe6d5; </i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="#" onClick="user_show();">个人信息</a></li>
+							<li><a href="#" onClick="user_changepwd();">修改密码</a></li>
+							<li><a href="#" onClick="user_qualification();">我的认证</a></li>
+							<li><a href="#" onClick="user_complaint();">我的投诉</a></li>
+							<li><a href="#" onClick="user_loginlog();">我的登录记录</a></li>
+							<li><a href="#" onClick="user_creditvaluelog();">我的信用值记录</a></li>
+							<li><a href="#" onClick="user_logout();">退出</a></li>
+						</ul>
+					</li>
+					<li id="role-name">学生</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
+<section class="container">
+	<div class="panel panel-default mt-20">
+		<div class="panel-header">
+			问题列表
+			<input type="button" class="btn btn-primary radius r" value="发布新问题" onclick="problem_new()">
+    	</div>
+		<div class="panel-body">
+			<div id="tab_problem_list" class="HuiTab">
+				<div class="tabBar cl">
+					<span onclick="reset_table_data('all');">所有问题</span>
+					<span onclick="reset_table_data('recomand');">推荐的问题</span>
+					<span onclick="reset_table_data('myproblem');">我发布的问题</span>
+				</div>
+				<div class="tabCon">
+					<table class="table table-border table-bordered table-hover">
+						<thead>
+							<tr>
+								<th scope="col" colspan="7">所有问题列表<a class="btn btn-success radius r" href="javascript:;" onclick="reset_table_data('all');" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
+							</tr>
+							<tr class="text-c">
+								<th width="10">ID</th>
+								<th width="130">标题</th>
+								<th width="90">问题类型</th>
+								<th width="90">位置</th>
+								<th width="90">发布者</th>
+								<th width="90">发布时间</th>
+								<th width="30">问题状态</th>
+							</tr>
+						</thead>
+						<tbody id="all-problem-table-content">
+							<tr id="all-problem-entry" class="text-c" style="display:none">
+								<td tag="id">1</td>
+								<td>
+									<a tag="title" title="查看问题" href="javascript:;" onClick="problem_show('10001')" style="text-decoration:none" class="ml-5">模板 - 问题</a>
+								</td>
+								<td tag="problem-type">类型</td>
+								<td tag="problem-location">位置</td>
+								<td>
+									<a tag="create-user" title="查看发布者" href="javascript:;" onClick="user_show('10001')" style="text-decoration:none" class="ml-5">模板 - 创建者</a>
+								</td>
+								<td tag="create-time">2017/10/01 10:00:00</td>
+								<td tag="problem-status">等待</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="tabCon">
+					<table class="table table-border table-bordered table-hover">
+						<thead>
+							<tr>
+								<th scope="col" colspan="8">所有推荐问题列表<a class="btn btn-success radius r" href="javascript:;" onclick="reset_table_data('recomand');" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
+							</tr>
+							<tr class="text-c">
+								<th width="10">ID</th>
+								<th width="100">标题</th>
+								<th width="30">问题类型</th>
+								<th width="70">位置</th>
+								<th width="50">发布者</th>
+								<th width="70">发布时间</th>
+								<th width="30">问题状态</th>
+								<th width="30">量化值<br>(越小越好)</th>
+							</tr>
+						</thead>
+						<tbody id="recommand-problem-table-content">
+							<tr id="recommand-problem-entry" class="text-c" style="display:none">
+								<td tag="id">1</td>
+								<td>
+									<a tag="title" title="查看问题" href="javascript:;" onClick="problem_show('10001')" style="text-decoration:none" class="ml-5">模板 - 问题</a>
+								</td>
+								<td tag="problem-type">类型</td>
+								<td tag="problem-location">位置</td>
+								<td>
+									<a tag="create-user" title="查看发布者" href="javascript:;" onClick="user_show('10001')" style="text-decoration:none" class="ml-5">模板 - 创建者</a>
+								</td>
+								<td tag="create-time">2017/10/01 10:00:00</td>
+								<td tag="problem-status">等待</td>
+								<td tag="recommand-value">值</td>
+							</tr>
+						</tbody>
+					</table>						
+				</div>
+				<div class="tabCon">
+					<table class="table table-border table-bordered table-hover">
+						<thead>
+							<tr>
+								<th scope="col" colspan="7">所有我发布的问题列表<a class="btn btn-success radius r" href="javascript:;" onclick="reset_table_data('myproblem');" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
+							</tr>
+							<tr class="text-c">
+								<th width="10">ID</th>
+								<th width="130">标题</th>
+								<th width="90">问题类型</th>
+								<th width="90">位置</th>
+								<th width="90">发布者</th>
+								<th width="90">发布时间</th>
+								<th width="30">问题状态</th>
+							</tr>
+						</thead>
+						<tbody id="my-problem-table-content">
+							<tr id="my-problem-entry" class="text-c" style="display:none">
+								<td tag="id">1</td>
+								<td>
+									<a tag="title" title="查看问题" href="javascript:;" onClick="problem_show('10001')" style="text-decoration:none" class="ml-5">模板 - 问题</a>
+								</td>
+								<td tag="problem-type">类型</td>
+								<td tag="problem-location">位置</td>
+								<td>
+									<a tag="create-user" title="查看发布者" href="javascript:;" onClick="user_show('10001')" style="text-decoration:none" class="ml-5">模板 - 创建者</a>
+								</td>
+								<td tag="create-time">2017/10/01 10:00:00</td>
+								<td tag="problem-status">等待</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<footer class="footer mt-20">
+  <div class="container">
+    <p>Copyright &copy; 广东技术师范学院 by H-ui.net All Rights Reserved. <br>
+  </div>
+</footer>
+
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="assets/static/js/custom.js"></script>
+<script>
+$(document).ready(function(){
+
+	check_login();
+	
+	//选项卡
+	$.Huitab("#tab_problem_list .tabBar span","#tab_problem_list .tabCon","current","click","0");
+	
+});
+
+function user_login() {
+	layer_show("请登录", "login.html", "400", "250");
+}
+
+function user_register() {
+	layer_show("注册", "register.html", "600", "460");
+}
+
+function user_logout() {
+	layer.confirm("确认要退出登录吗?", function(index){
+		$.ajax({
+			type: "POST",
+			url: "user-logout.action",
+			dataType: "json",
+			success: function(result) {
+				if (result.msgType == "success") {
+					layer.msg("已退出登录", {icon:1, time:1000});
+					$(".nologin").show();
+					$(".login").hide();
+				} else {
+					layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+						icon : 2,
+						shade: 0.4
+					});
+				}
+			},
+			error: function() {
+				layer.msg("connection error", {
+					icon: 2,
+					shade: 0.4
+				});
+			}
+		});
+	});
+}
+
+function check_login() {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "check.action",
+		data: {
+			t: "login"
+		},
+		dataType: "json",
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType != "success") {
+ 				user_login();
+			} else {
+				 $.ajax({
+					type: "POST",
+					url: "platform-user.action",
+					dataType: "json",
+					beforeSend: function() {
+						hint = layer.msg("初始化中, 请稍后", {
+							icon: 16,
+							shade: 0.4,
+							time: 0
+						});
+					},
+					complete: function() {
+						layer.close(hint);
+					},
+					success: function(result) {
+			 			if (result.msgType == "success") {
+			 				var content = result.msgContent;
+			 				sessionStorage.setItem("userUid", content.user.uid);
+			 				$(".nologin").hide();
+			 				if (content.user.nickname != null)
+			 					$("#user-name").html(content.user.nickname);
+			 				else
+			 					$("#user-name").html(content.user.name);
+			 				$("#role-name").html(content.user.role.name);
+			 				$(".login").show();
+			 				reset_table_data("all");
+						} else {
+							layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+								icon : 2,
+								shade: 0.4
+							});
+						}
+					},
+					error: function() {
+						layer.msg("connection error", {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+}
+
+function user_show(uid) {
+	if (uid == null || uid == "")
+		uid = sessionStorage.getItem("userUid");
+	layer_show("用户详情", "user-show-update.html?op=show&uid=" + uid, "600", "460");
+}
+
+function user_changepwd() {
+	layer_show("更改密码", "user-change-password.html", "", "");
+}
+
+function user_qualification() {
+	layer_show("我的认证", "user-qualification-show-apply.html?op=show", "", "");
+}
+
+function user_complaint() {
+	layer_show("我的投诉", "user-complaint-show.html", "", "");
+}
+
+function user_loginlog() {
+	layer_show("我的登录记录", "user-login-log.html", "", "");
+}
+
+function user_creditvaluelog() {
+	layer_show("我的信用值记录", "user-credit-value-log.html", "", "");
+}
+
+function reset_table_data(w) {
+	switch(w) {
+	case 'all': {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "problem-get.action",
+		data: {
+			type: "summary"
+		},
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$("#all-problem-table-content tr:visible").empty();
+				var content = result.msgContent;
+				$.each(content, function(index, value) {
+					var template = $("#all-problem-entry").clone();
+					template.appendTo("#all-problem-table-content");
+					template.find('[tag="id"]').html(index);
+					template.find('[tag="title"]').attr("onclick", "problem_show('" + value.uid + "')");
+					template.find('[tag="title"]').text(value.title);
+					template.find('[tag="problem-type"]').html(value.problemtype.name);
+					template.find('[tag="problem-location"]').html(value.location.name);
+					template.find('[tag="create-user"]').attr("onclick", "user_show('" + value.createuser.uid + "')");
+					template.find('[tag="create-user"]').text(value.createuser.name);
+					if (value.createtime <= 0) {
+						template.find('[tag="create-time"]').html("不可用");
+					} else {
+						template.find('[tag="create-time"]').html(unixTimestamptoDateString(value.createtime));
+					}
+					if (value.status == -1) {
+						template.find('[tag="problem-status"]').text('锁定');
+					}
+					if (value.status == 0) {
+						template.find('[tag="problem-status"]').text('等待中');
+					}
+					if (value.status == 1) {
+						template.find('[tag="problem-status"]').text('处理中');
+					}
+					if (value.status == 2) {
+						template.find('[tag="problem-status"]').text('已完成');
+					}
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+	}
+	break;
+	case 'recomand': {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "problem-get.action",
+		data: {
+			type: "recommand"
+		},
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$("#recommand-problem-table-content tr:visible").empty();
+				var content = result.msgContent;
+				$.each(content, function(index, value) {
+					var template = $("#recommand-problem-entry").clone();
+					template.appendTo("#recommand-problem-table-content");
+					template.find('[tag="id"]').html(index);
+					template.find('[tag="title"]').attr("onclick", "problem_show('" + value.uid + "')");
+					template.find('[tag="title"]').text(value.title);
+					template.find('[tag="problem-type"]').html(value.problemtype.name);
+					template.find('[tag="problem-location"]').html(value.location.name);
+					template.find('[tag="create-user"]').attr("onclick", "user_show('" + value.createuser.uid + "')");
+					template.find('[tag="create-user"]').text(value.createuser.name);
+					if (value.createtime <= 0) {
+						template.find('[tag="create-time"]').html("不可用");
+					} else {
+						template.find('[tag="create-time"]').html(unixTimestamptoDateString(value.createtime));
+					}
+					if (value.status == -1) {
+						template.find('[tag="problem-status"]').text('锁定');
+					}
+					if (value.status == 0) {
+						template.find('[tag="problem-status"]').text('等待中');
+					}
+					if (value.status == 1) {
+						template.find('[tag="problem-status"]').text('处理中');
+					}
+					if (value.status == 2) {
+						template.find('[tag="problem-status"]').text('已完成');
+					}
+					template.find('[tag="recommand-value"]').html(value.recommandvalue);
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+	}
+	break;
+	case 'myproblem':{
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "problem-get.action",
+		data: {
+			type: "my",
+		},
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$("#my-problem-table-content tr:visible").empty();
+				var content = result.msgContent;
+				$.each(content, function(index, value) {
+					var template = $("#my-problem-entry").clone();
+					template.appendTo("#my-problem-table-content");
+					template.find('[tag="id"]').html(index);
+					template.find('[tag="title"]').attr("onclick", "problem_show('" + value.uid + "')");
+					template.find('[tag="title"]').text(value.title);
+					template.find('[tag="problem-type"]').html(value.problemtype.name);
+					template.find('[tag="problem-location"]').html(value.location.name);
+					template.find('[tag="create-user"]').attr("onclick", "user_show('" + value.createuser.uid + "')");
+					template.find('[tag="create-user"]').text(value.createuser.name);
+					if (value.createtime <= 0) {
+						template.find('[tag="create-time"]').html("不可用");
+					} else {
+						template.find('[tag="create-time"]').html(unixTimestamptoDateString(value.createtime));
+					}
+					if (value.status == -1) {
+						template.find('[tag="problem-status"]').text('锁定');
+					}
+					if (value.status == 0) {
+						template.find('[tag="problem-status"]').text('等待中');
+					}
+					if (value.status == 1) {
+						template.find('[tag="problem-status"]').text('处理中');
+					}
+					if (value.status == 2) {
+						template.find('[tag="problem-status"]').text('已完成');
+					}
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+	}
+	}
+}
+
+function problem_new() {
+	layer_show("新建问题", "user-problem-new.html", "", "");
+}
+
+function problem_show(uid) {
+	layer_show("查看问题", "user-problem-detail.html?uid=" + uid, "", "");
+}
+</script> 
+</body>
+</html>
+<!--H-ui前端框架提供前端技术支持 h-ui.net @2017-01-01 -->

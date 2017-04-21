@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../assets/admin/lib/html5shiv.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="../assets/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>学院</title>
+</head>
+<body>
+<article class="page-container form form-horizontal">
+	<input type="hidden" name="uid" id="uid">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请用户：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-user-name">用户</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请认证类型：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-qualificaton-type">认证类型</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请时间：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-qualification-time">时间</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请 IP 地址：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-qualification-ip-address">IP 地址</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请附加内容：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-qualification-description">附加内容</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请状态：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-qualification-status">状态</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">审核人：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-checking-user">不可用</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">审核时间：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-checking-time">不可用</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">审核 IP 地址：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-checking-ip-address">不可用</span>
+		</div>
+	</div>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../assets/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="../assets/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../assets/admin/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var hint;
+	
+	var uid = $.getUrlParam("uid");
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常, 无法初始化",{icon:2,time:1000});
+		return;
+	}
+	
+	init_qualification(uid);
+	
+});
+
+function init_qualification(uid) {
+	var hint;
+	$.ajax({
+		url: "qualreq-get.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			uid: uid,
+			type: "detail"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#span-user-name").html(value.user.name);
+				$("#span-qualificaton-type").html(value.type.name);
+				if (value.requesttime <= 0) {
+					$("#span-qualification-time").html("不可用");
+				} else {
+					$("#span-qualification-time").html(unixTimestamptoDateString(value.requesttime));
+				}
+				if (value.requestip == null || value.requestip == "-1") {
+					$("#span-qualification-ip-address").html("不可用");
+				} else {
+					$("#span-qualification-ip-address").html(value.requestip);
+				}
+				$("#span-qualification-description").html(value.description);
+				if (value.checkingstatus < 0) {
+					$("#span-qualification-status").html('未通过');
+				}
+				if (value.checkingstatus == 0) {
+					$("#span-qualification-status").html('等待确认');
+				}
+				if (value.checkingstatus > 0) {
+					$("#span-qualification-status").html('已通过');
+				}
+				if (value.checkingtime <= 0) {
+					$("#span-checking-time").html("不可用");
+				} else {
+					$("#span-checking-time").html(unixTimestamptoDateString(value.checkingtime));
+				}
+				if (value.checkingip == null || value.requestip == "-1") {
+					$("#span-checking-ip-address").html("不可用");
+				} else {
+					$("#span-checking-ip-address").html(value.checkingip);
+				}
+				if (value.checkinguser != null) {
+					$("#span-checking-user").html(value.checkinguser.name);
+				}
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

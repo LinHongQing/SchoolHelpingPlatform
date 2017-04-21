@@ -1,0 +1,279 @@
+﻿<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../assets/admin/lib/html5shiv.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="../assets/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>认证类型</title>
+</head>
+<body>
+<article class="page-container">
+	<form action="#" class="form form-horizontal" id="form-qualification-type-show-update">
+		<input type="hidden" id="uid" name="uid">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>认证类型名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" placeholder="请输入角色名称" id="name" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">适合的问题类型：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<dl class="permission-list">
+					<dt>
+						<label>
+							<input type="checkbox" disabled>
+							全选
+						</label>
+					</dt>
+					<dd>
+						<dl class="cl permission-list-content">
+							<dd id="problem-type-content">
+								<label class="problem-type-entry" style="display:none">
+									<input class="problem-type-checkbox" type="checkbox" disabled>
+									<span class="problem-type-description">测试</span>
+								</label>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">创建者：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-create-user-name">管理员</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">创建时间：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-create-time">时间</span>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">创建 IP 地址：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-create-ip">IP</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="button" class="btn btn-success radius" id="btn-update" onclick="change_to_update()"><i class="icon-ok"></i> 修改</button>
+				<button type="submit" class="btn btn-success radius" id="btn-submit" style="display:none"><i class="icon-ok"></i> 保存</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../assets/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="../assets/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../assets/admin/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var hint;
+	
+	var uid = $.getUrlParam("uid");
+	var op = $.getUrlParam("op");
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常, 无法初始化",{icon:2,time:1000});
+		return;
+	} else {
+		$("#uid").val(uid);
+	}
+	
+	switch(op) {
+	case "update": {
+		init_problemtype();
+		init_qualificationtype(uid);
+		change_to_update();
+	}
+	break;
+	case "show":
+	default: {
+		init_problemtype();
+		init_qualificationtype(uid);
+	}
+	}
+	
+	$(".permission-list dt input:checkbox").click(function(){
+		$(this).closest("dl").find("dd input:checkbox").prop("checked",$(this).prop("checked"));
+	});
+	
+	$("#form-qualification-type-show-update").validate({
+		rules: {
+			"name": {
+				required: true
+			}
+		},
+		messages: {
+			"name": "角色名称不能为空"
+		},
+		onkeyup: false,
+		focusCleanup: true,
+		success: "valid",
+		submitHandler: function(form) {
+			var params = $("#form-qualification-type-show-update").serialize();
+			console.log("params:" + params);
+			$.ajax({
+				type: "post",
+				data: params,
+				dataType: "json",
+				url: "qualtype-update.action",
+				success: function(result) {
+					if (result.msgType == "success") {
+						layer.msg("保存成功", {icon: 1, time: 1000});
+					} else {
+						console.log("code:" + result.msgCode);
+						console.log("content:" + result.msgContent);
+						layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				},
+                error: function() {
+					layer.msg("connection error!",{icon:2,time:1000});
+				}
+			});
+		}
+	});
+	
+});
+
+function change_to_update() {
+	$("#span-name").hide();
+	$("#btn-update").hide();
+	
+	$("#name").show();
+	$("input:checkbox:visible").attr("disabled", false);
+	$("#btn-submit").show();
+}
+
+function init_problemtype() {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "init.action",
+		data: {
+			t: "problemtype"
+		},
+		async: false,
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+				var content = result.msgContent;
+				$.each(content, function(index, value) {
+					template = $(".problem-type-entry:first").clone();
+ 					template.find(".problem-type-checkbox").attr("name", "problemtypeuid");
+ 					template.find(".problem-type-checkbox").attr("value", value.uid);
+ 					template.find(".problem-type-description").html(value.name);
+ 					template.appendTo("#problem-type-content");
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+}
+function init_qualificationtype(uid) {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "qualtype-get.action",
+		dataType: "json",
+		data: {
+			uid: uid
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+			var content = result.msgContent;
+			$.each(content, function(index, obj) {
+				$("#uid").val(obj.uid);
+				$("#span-name").html(obj.name);
+				$("#name").val(obj.name);
+				$.each(obj.applicableproblemtypes, function(idx, value) {
+					$(".problem-type-checkbox[value='" + value.uid + "']:visible").attr("checked", "true");
+				});
+				if (obj.createtime == "-1") {
+					$("#span-create-time").html("不可用");
+				} else {
+					$("#span-create-time").html(unixTimestamptoDateString(obj.createtime));
+				}
+				if (obj.createip == "-1") {
+					$("#span-create-ip").html("不可用");
+				} else {
+					$("#span-create-ip").html(obj.createip);
+				}
+				$("#span-create-user-name").html(obj.createuser.name);
+			});
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

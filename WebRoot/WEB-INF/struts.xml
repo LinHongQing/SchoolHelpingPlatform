@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.custom.i18n.resources" value="messageResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.multipart.parser" value="jakarta" />
+	<constant name="struts.objectFactory" value="spring" />
+	<constant name="struts.objectFactory.spring.autowire" value="name" />
+	<constant name="struts.multipart.maxSize" value="10485760" />
+	<package name="admin" extends="struts-default" namespace="/admin">
+
+		<interceptors>
+			<interceptor name="checkLoginState" class="interceptors.LoginInterceptor" />
+			<interceptor name="checkAuthorization" class="interceptors.AuthorizationInterceptor" />
+			<interceptor-stack name="for-admins">
+				<interceptor-ref name="checkLoginState">
+					<param name="role">admin</param>
+				</interceptor-ref>
+				<interceptor-ref name="checkAuthorization">
+					<param name="role">admin</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<action name="admin-*" class="action.AdminAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins" />
+		</action>
+		<action name="user-*" class="action.UserAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins" />
+		</action>
+		<action name="platform-*" class="action.PlatformAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="academy-*" class="action.AcademyAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="course-*" class="action.CourseAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="grade-*" class="action.GradeAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="term-*" class="action.TermAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="location-*" class="action.LocationAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="role-*" class="action.RoleAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="privilege-*" class="action.PrivilegeAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="qualtype-*" class="action.QualificationtypeAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="qualreq-*" class="action.QualificationAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="problemtype-*" class="action.ProblemtypeAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="init" class="action.InitAction" method="init">
+		</action>
+		<action name="check" class="action.CheckAction" method="check">
+			<param name="ui">admin</param>
+		</action>
+		<action name="loginlog-*" class="action.LoginlogAction" method="{1}">
+			<param name="ui">admin</param>
+		</action>
+		<action name="creditvaluelog-*" class="action.CreditvaluelogAction" method="{1}">
+			<param name="ui">admin</param>
+		</action>
+		<action name="problem-*" class="action.ProblemAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="complaint-*" class="action.ComplaintAction" method="{1}">
+			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+	</package>
+	<package name="user" extends="struts-default" namespace="/">
+		<interceptors>
+			<interceptor name="checkLoginState" class="interceptors.LoginInterceptor" />
+			<interceptor name="checkAuthorization" class="interceptors.AuthorizationInterceptor" />
+			<interceptor-stack name="for-users">
+				<interceptor-ref name="checkLoginState">
+					<param name="role">user</param>
+				</interceptor-ref>
+				<interceptor-ref name="checkAuthorization">
+					<param name="role">user</param>
+				</interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<action name="user-*" class="action.UserAction" method="{1}">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users" />
+		</action>
+		<action name="check" class="action.CheckAction" method="check">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users"></interceptor-ref>
+		</action>
+		<action name="platform-*" class="action.PlatformAction" method="{1}">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users"></interceptor-ref>
+		</action>
+		<action name="loginlog-*" class="action.LoginlogAction" method="{1}">
+			<param name="ui">user</param>
+		</action>
+		<action name="creditvaluelog-*" class="action.CreditvaluelogAction" method="{1}">
+			<param name="ui">user</param>
+		</action>
+		<action name="problem-*" class="action.ProblemAction" method="{1}">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users"></interceptor-ref>
+		</action>
+		<action name="qualification-*" class="action.QualificationAction" method="{1}">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users"></interceptor-ref>
+		</action>
+		<action name="complaint-*" class="action.ComplaintAction" method="{1}">
+			<param name="ui">user</param>
+			<interceptor-ref name="for-users"></interceptor-ref>
+		</action>
+		<action name="init" class="action.InitAction" method="init">
+		</action>
+	</package>
+	<package name="api" extends="struts-default" namespace="/api">
+		<action name="systemapis" class="action.SystemApisAction" method="doRun">
+		</action>
+	</package>
+</struts>    

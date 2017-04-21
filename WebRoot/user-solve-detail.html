@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="assets/lib/html5shiv.js"></script>
+<script type="text/javascript" src="assets/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/css/custom.css" />
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>问题解决详情</title>
+</head>
+<body>
+<article class="page-container form form-horizontal" style="padding:20px">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">问题标题：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-title">标题</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">问题解决者：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<a tag="solve-user" title="查看用户" href="javascript:;" onClick="user_show('10001')" style="text-decoration:none" class="ml-5"> 用户 </a>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">问题协助者：</label>
+		<div class="formControls col-xs-8 col-sm-9 assistant-users-content">
+			<a tag="solve-assistant-user" title="查看用户" href="javascript:;" onClick="javascript:;" style="text-decoration:none" class="ml-5"> 用户 </a>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">解决附加内容：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-description">内容</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">解决时间：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-solve-create-time">时间</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">解决 IP 地址：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-solve-create-ip">IP</span>
+		</div>
+	</div>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="assets/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var hint;
+	
+	var uid = $.getUrlParam("uid");
+	
+	console.log("uid:" + uid);
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常, 无法初始化",{icon:2,time:1000});
+		return;
+	}
+	
+	init_solve(uid);
+	
+});
+
+function init_solve(uid) {
+
+	$.ajax({
+		url: "problem-get.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			solveduid: uid,
+			type: "solve"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#span-title").html(value.problem.title);
+				$('[tag="solve-user"]').attr("onclick", "user_show('" + value.createuser.uid + "')");
+				$('[tag="solve-user"]').text(value.createuser.name);
+				if (value.assistant != null && value.assistant.length > 0) {
+					$.each(value.assistant, function(idx, v) {
+						var tmp = $('[tag="solve-assistant-user"]:last');
+						tmp.attr("onclick", "user_show('" + v.uid + "')");
+						tmp.text(" " + v.name + " ");
+						if (idx < value.assistant.length - 1) {
+							tmp = tmp.clone();
+							tmp.appendTo($(".assistant-users-content"));
+						}
+					});
+				} else {
+					$(".assistant-users-content").empty();
+					$(".assistant-users-content").html("无");
+				}
+				if (value.createtime <= 0) {
+					$("#span-solve-create-time").html("不可用");
+				} else {
+					$("#span-solve-create-time").html(unixTimestamptoDateString(value.createtime));
+				}
+				if (value.createip == null || value.requestip == "-1") {
+					$("#span-solve-create-ip").html("不可用");
+				} else {
+					$("#span-solve-create-ip").html(value.createip);
+				}
+				$("#span-description").html(value.description);
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+function user_show(uid) {
+	if (uid == null || uid == "")
+		uid = sessionStorage.getItem("userUid");
+	layer_show("用户详情", "user-show-update.html?op=show&uid=" + uid, "600", "460");
+}
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

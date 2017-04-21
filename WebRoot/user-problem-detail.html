@@ -1,0 +1,572 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="assets/lib/html5shiv.js"></script>
+<script type="text/javascript" src="assets/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/css/custom.css" />
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>问题详情</title>
+</head>
+<body>
+<article class="page-container" style="padding:20px">
+<input class="btn btn-danger radius r btn-complaint" type="button" value="&nbsp;&nbsp;投诉此问题&nbsp;&nbsp;" onclick="complaint_problem();">
+	<form action="" method="post" style="padding: 20px" class="form form-horizontal" id="form-problem">
+		<input type="hidden" name="uid" id="uid">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-title">标题</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">问题类型：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-problem-type">类型</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">问题位置：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-problem-location">位置</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">发布时间：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-problem-create-time">时间</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">发布 IP 地址：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-problem-create-ip">IP</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-description">具体内容</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">空闲日期：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-prefer-day"></span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">空闲时间段：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-prefer-time-start">08:00</span>-<span id="span-prefer-time-end">12:00</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">状态：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<a id="problem-status" title="查看详细信息" href="javascript:;" onClick="javascript:;" style="text-decoration:none" class="ml-5">模板 - 状态</a>
+			</div>
+		</div>
+		<div class="row cl problem-reply" style="display:none">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>完成附加内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea id="reply-description" name="solvedescription" cols="" rows="" class="textarea" placeholder="说点什么..." onKeyUp="$.Huitextarealength(this,500)"></textarea>
+				<p class="textarea-numberbar"><em class="textarea-length">0</em>/500</p>
+			</div>
+		</div>
+		<div class="row cl problem-reply" style="display:none">
+			<label class="form-label col-xs-4 col-sm-3">协助人：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<dl class="assistant-user-list">
+					<dt>
+						<input type="text" class="input-text" style="width:150px" placeholder="输入协助者学号" id="assistant-user-check">
+						<a title="添加协助人" href="javascript:;" onClick="add_assistant_user();" style="text-decoration:none" class="ml-5"><i class="Hui-iconfont">&#xe600;</i>添加</a>
+					</dt>
+					<dd>
+						<dl class="cl assistant-user-content">
+							<dd id="assistant-user-content">
+								<label class="assistant-user-entry" style="display:none">
+									<input class="assistant-user-checkbox" type="checkbox" checked>
+									<span class="assistant-user-name">名字</span>
+								</label>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;与问题发布者聊天&nbsp;&nbsp;" onclick="chat();">
+				<input class="btn btn-primary radius btn-accept" type="button" value="&nbsp;&nbsp;接单&nbsp;&nbsp;" onclick="accept_problem();" style="display:none;">
+				<input class="btn btn-primary radius btn-reject" type="button" value="&nbsp;&nbsp;拒绝该接单者帮助&nbsp;&nbsp;" onclick="reject_problem();" style="display:none;">
+				<input class="btn btn-primary radius btn-cancel" type="button" value="&nbsp;&nbsp;取消接单&nbsp;&nbsp;" onclick="cancel_problem();" style="display:none;">
+				<input class="btn btn-primary radius btn-finish" type="button" value="&nbsp;&nbsp;完成&nbsp;&nbsp;" onclick="finish_problem();" style="display:none;">
+				<input class="btn btn-primary radius btn-submit" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" style="display:none">
+			</div>
+		</div>
+	</form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="assets/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var hint;
+	
+	var uid = $.getUrlParam("uid");
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常, 无法初始化",{icon:2,time:1000});
+		return;
+	}
+	
+	$("#form-problem").validate({
+		rules: {
+			"solvedescription": {
+				required: true
+			}
+		},
+		messages: {
+			"solvedescription": "请输入内容"
+		},
+		onkeyup: false,
+		focusCleanup: true,
+		success: "valid",
+		submitHandler: function(form) {
+			var params = $("#form-problem").serialize();
+			$.ajax({
+				type: "post",
+				data: params,
+				dataType: "json",
+				url: "problem-finish.action",
+				success: function(result) {
+					if (result.msgType == "success") {
+						layer.msg("完成操作", {icon: 1, time: 1000});
+						init_problem(uid);
+					} else {
+						layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				},
+                error: function() {
+					layer.msg("connection error!",{icon:2,time:1000});
+				}
+			});
+		}
+	});
+	
+	init_problem(uid);
+	
+});
+
+function init_problem(uid) {
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	var hint;
+	$.ajax({
+		url: "problem-get.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			uid: uid,
+			type: "detail"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#uid").val(value.uid);
+				$("#span-title").html(value.title);
+				$("#span-problem-type").html(value.problemtype.name);
+				$("#span-problem-location").html(value.location.name);
+				if (value.createtime <= 0) {
+					$("#span-problem-create-time").html("不可用");
+				} else {
+					$("#span-problem-create-time").html(unixTimestamptoDateString(value.createtime));
+				}
+				if (value.createip == null || value.requestip == "-1") {
+					$("#span-problem-create-ip").html("不可用");
+				} else {
+					$("#span-problem-create-ip").html(value.createip);
+				}
+				$("#span-description").html(value.description);
+				if (value.status == -1) {
+					$(".btn-accept").hide();
+					$(".btn-reject").hide();
+					$(".btn-cancel").hide();
+					$(".btn-finish").hide();
+					$(".btn-complaint").hide();
+					$("#problem-status").text('锁定');
+				}
+				if (value.status == 0) {
+					$(".btn-accept").show();
+					$(".btn-reject").hide();
+					$(".btn-cancel").hide();
+					$(".btn-finish").hide();
+					$("#problem-status").text('等待中');
+				}
+				if (value.status == 1) {
+					$(".btn-accept").hide();
+					$("#problem-status").text('处理中');
+					$("#problem-status").attr("onclick", "solve_show('" + value.solved.uid + "')");
+					check_problem_creator(uid);
+					check_problem_owner(uid);
+				}
+				if (value.status == 2) {
+					$(".btn-accept").hide();
+					$(".btn-cancel").hide();
+					$(".btn-finish").hide();
+					$(".btn-submit").hide();
+					$(".btn-complaint").hide();
+					$(".problem-reply").hide();
+					$("#problem-status").text('已完成');
+					$("#problem-status").attr("onclick", "solve_show('" + value.solved.uid + "')");
+				}
+				$("#span-prefer-day").empty();
+				$("#span-prefer-day").append("周");
+				var preferday = value.preferday;
+				preferday = preferday.split(",");
+				$.each(preferday, function(idx, v) {
+					var d = "-1";
+					switch(v) {
+					case "0":
+						d = "日"
+						break;
+					case "1":
+						d = "一";
+						break;
+					case "2":
+						d = "二";
+						break;
+					case "3":
+						d = "三";
+						break;
+					case "4":
+						d = "四";
+						break;
+					case "5":
+						d = "五";
+						break;
+					case "6":
+						d = "六";
+						break;
+					}
+					$("#span-prefer-day").append(d);
+				});
+				var preferstart_hour = parseInt(value.preferstart / 60);
+				var preferstart_minute = value.preferstart % 60;
+				var preferend_hour = parseInt(value.preferend / 60);
+				var preferend_minute = value.preferend % 60;
+				$("#span-prefer-time-start").html((preferstart_hour < 10 ? "0" + preferstart_hour : preferstart_hour) + ":" + (preferstart_minute < 10 ? "0" + preferstart_minute : preferstart_minute));
+				$("#span-prefer-time-end").html((preferend_hour < 10 ? "0" + preferend_hour : preferend_hour) + ":" + (preferend_minute < 10 ? "0" + preferend_minute : preferend_minute));
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+function add_assistant_user() {
+	var hint;
+	var num = $("#assistant-user-check").val();
+	if (num == null || num == "") {
+		layer.msg("请输入学号", {
+			icon : 2,
+			shade: 0.4
+		});
+		return;
+	}
+	$.ajax({
+		url: "check.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			num: num,
+			t: "user"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			var content = result.msgContent;
+			template = $(".assistant-user-entry:first").clone();
+ 			template.find(".assistant-user-checkbox").attr("name", "solveassistantuid");
+ 			template.find(".assistant-user-checkbox").attr("value", content.uid);
+ 			template.find(".assistant-user-name").html(content.name);
+ 			template.appendTo("#assistant-user-content");
+			template.show();
+		} else {
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+function check_problem_creator(uid) {
+	var hint;
+	$.ajax({
+		url: "check.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			uid: uid,
+			t: "problemcreator"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			$(".btn-reject").show();
+		} else if (result.msgContent != null) {
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+function check_problem_owner(uid) {
+	var hint;
+	$.ajax({
+		url: "check.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			uid: uid,
+			t: "problemowner"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			$(".btn-finish").show();
+			$(".btn-cancel").show();
+		} else if (result.msgContent != null) {
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+function chat() {
+}
+
+function complaint_problem() {
+	var uid = $("#uid").val();
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	layer_show("投诉", "user-complaint-request.html?uid=" + uid, "", "");
+}
+
+function accept_problem() {
+	var uid = $("#uid").val();
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			uid: uid
+		},
+		dataType: "json",
+		url: "problem-accept.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				layer.msg("接单成功", {icon: 1, time: 1000});
+				init_problem(uid);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
+}
+
+function reject_problem() {
+	var uid = $("#uid").val();
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			uid: uid
+		},
+		dataType: "json",
+		url: "problem-reject.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				layer.msg("已拒绝", {icon: 1, time: 1000});
+				init_problem(uid);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
+}
+
+function cancel_problem() {
+	var uid = $("#uid").val();
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			uid: uid
+		},
+		dataType: "json",
+		url: "problem-cancel.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				layer.msg("取消接单成功", {icon: 1, time: 1000});
+				init_problem(uid);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
+}
+
+function finish_problem() {
+	$(".btn-cancel").hide();
+	$(".btn-finish").hide();
+	$(".btn-submit").show();
+	$(".problem-reply").show();
+}
+
+function solve_show(uid) {
+	layer_show("解决详情", "user-solve-detail.html?uid=" + uid, "", "");
+}
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="assets/lib/html5shiv.js"></script>
+<script type="text/javascript" src="assets/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>新建问题</title>
+</head>
+<body>
+<div class="page-container">
+	<form action="" method="post" style="padding: 20px" class="form form-horizontal" id="form-problem-new">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>标题：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="请输入标题" id="title" name="title">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>问题类型：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box" style="width:150px;">
+					<select id="problemtypeuid" name="problemtypeuid" class="select" size="1">
+						<option value="-1">请选择问题类型</option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>空闲时间(星期)：</label>
+				<div class="check-box">
+					<input type="checkbox" id="checkbox-sunday" name="preferday" value="0">
+					<label for="checkbox-sunday">星期日</label>
+					<input type="checkbox" id="checkbox-monday" name="preferday" value="1">
+					<label for="checkbox-monday">星期一</label>
+					<input type="checkbox" id="checkbox-tuesday" name="preferday" value="2">
+					<label for="checkbox-tuesday">星期二</label>
+					<input type="checkbox" id="checkbox-wednesday" name="preferday" value="3">
+					<label for="checkbox-wednesday">星期三</label>
+					<input type="checkbox" id="checkbox-thursday" name="preferday" value="4">
+					<label for="checkbox-thursday">星期四</label>
+					<input type="checkbox" id="checkbox-friday" name="preferday" value="5">
+					<label for="checkbox-friday">星期五</label>
+					<input type="checkbox" id="checkbox-saturday" name="preferday" value="6">
+					<label for="checkbox-saturday">星期六</label>
+				</div>
+		</div>
+		<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>空闲时间(时间段)：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box" style="width:80px;">
+					<select id="preferstart-hour" name="preferstart-hour" class="select" size="1">
+						<option value="8">08时</option>
+						<option value="9">09时</option>
+						<option value="10">10时</option>
+						<option value="11">11时</option>
+						<option value="12">12时</option>
+						<option value="13">13时</option>
+						<option value="14">14时</option>
+						<option value="15">15时</option>
+						<option value="16">16时</option>
+						<option value="17">17时</option>
+						<option value="18">18时</option>
+						<option value="19">19时</option>
+						<option value="20">20时</option>
+						<option value="21">21时</option>
+						<option value="22">22时</option>
+					</select>
+				</span>
+				：
+				<span class="select-box" style="width:80px;">
+					<select id="preferstart-minute" name="preferstart-minute" class="select" size="1">
+						<option value="0">00分</option>
+						<option value="5">05分</option>
+						<option value="10">10分</option>
+						<option value="15">15分</option>
+						<option value="20">20分</option>
+						<option value="25">25分</option>
+						<option value="30">30分</option>
+						<option value="35">35分</option>
+						<option value="40">40分</option>
+						<option value="45">45分</option>
+						<option value="50">50分</option>
+						<option value="55">55分</option>
+					</select>
+				</span>
+				-
+				<span class="select-box" style="width:80px;">
+					<select id="preferend-hour" name="preferend-hour" class="select" size="1">
+						<option value="8">08时</option>
+						<option value="9">09时</option>
+						<option value="10">10时</option>
+						<option value="11">11时</option>
+						<option value="12">12时</option>
+						<option value="13">13时</option>
+						<option value="14">14时</option>
+						<option value="15">15时</option>
+						<option value="16">16时</option>
+						<option value="17">17时</option>
+						<option value="18">18时</option>
+						<option value="19">19时</option>
+						<option value="20">20时</option>
+						<option value="21">21时</option>
+						<option value="22">22时</option>
+					</select>
+				</span>
+				：
+				<span class="select-box" style="width:80px;">
+					<select id="preferend-minute" name="preferend-minute" class="select" size="1">
+						<option value="0">00分</option>
+						<option value="5">05分</option>
+						<option value="10">10分</option>
+						<option value="15">15分</option>
+						<option value="20">20分</option>
+						<option value="25">25分</option>
+						<option value="30">30分</option>
+						<option value="35">35分</option>
+						<option value="40">40分</option>
+						<option value="45">45分</option>
+						<option value="50">50分</option>
+						<option value="55">55分</option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>内容：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea id="description" name="description" cols="" rows="" class="textarea" placeholder="说点什么..." onKeyUp="$.Huitextarealength(this,500)"></textarea>
+				<p class="textarea-numberbar"><em class="textarea-length">0</em>/500</p>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input type="hidden" id="preferstart" name="preferstart">
+				<input type="hidden" id="preferend" name="preferend">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="assets/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+	init_problemtype();
+
+	$.validator.addMethod("checkSelected", function(value, element, param) {
+		if (value == "-1")
+			return false;
+		else
+			return true;
+	}, "请选择问题类型");
+	
+	$("#form-problem-new").validate({
+		rules: {
+			"title": {
+				required: true,
+				minlength: 2,
+				maxlength: 16
+			},
+			"problemtypeuid": {
+				required: true,
+				checkSelected: true
+			},
+			"preferday": {
+				required: true,
+			},
+			"description": {
+				required: true,
+			}
+		},
+		messages: {
+			"title": "请输入标题",
+			"preferday": {
+				required: "请至少选择一项"
+			},
+			"description": "请输入内容"
+		},
+		onkeyup: false,
+		focusCleanup: true,
+		success: "valid",
+		submitHandler: function(form) {
+			var start_hour = $("#preferstart-hour").val();
+			var start_minute = $("#preferstart-minute").val();
+			var end_hour = $("#preferend-hour").val();
+			var end_minute = $("#preferend-minute").val();
+			$("#preferstart").val(parseInt(start_hour * 60) + parseInt(start_minute));
+			$("#preferend").val(parseInt(end_hour * 60) + parseInt(end_minute));
+			var params = $("#form-problem-new").serialize();
+			$.ajax({
+				type: "post",
+				data: params,
+				dataType: "json",
+				url: "problem-save.action",
+				success: function(result) {
+					if (result.msgType == "success") {
+						layer.msg("保存成功", {icon: 1, time: 1000});
+					} else {
+						layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				},
+                error: function() {
+					layer.msg("connection error!",{icon:2,time:1000});
+				}
+			});
+		}
+	});
+});
+
+function init_problemtype() {
+	var hint;
+	$.ajax({
+		url: "init.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			t: "problemtype"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#problemtypeuid").append("<option value=\"" + value.uid + "\">" + value.name + "</option>");
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+</script>
+</body>
+</html>

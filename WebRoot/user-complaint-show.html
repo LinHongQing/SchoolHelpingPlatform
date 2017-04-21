@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="assets/lib/html5shiv.js"></script>
+<script type="text/javascript" src="assets/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>我的投诉</title>
+</head>
+<body>
+<div class="page-container">
+	<div class="panel panel-default mt-20">
+		<div class="panel-header">
+			投诉记录
+		</div>
+		<div class="panel-body">
+			<table class="table table-border table-bordered table-hover">
+				<thead>
+					<tr>
+						<th scope="col" colspan="7">投诉列表<a class="btn btn-success radius r" href="javascript:;" onclick="init_qualificationlog();" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
+					</tr>
+					<tr class="text-c">
+						<th width="10">ID</th>
+						<th width="130">投诉的问题帖子</th>
+						<th width="50">投诉人</th>
+						<th width="90">投诉时间</th>
+						<th width="70">投诉 IP 地址</th>
+						<th width="30">状态</th>
+						<th width="50">处理人</th>
+					</tr>
+				</thead>
+				<tbody id="complaint-content">
+					<tr id="complaint-entry" class="text-c" style="display:none">
+						<td tag="id">1</td>
+						<td>
+							<a tag="complaint-problem-title" title="查看被投诉问题" href="javascript:;" onClick="javascript:;" style="text-decoration:none" class="ml-5">模板 - 问题</a>
+						</td>
+						<td>
+							<a tag="complaint-creator" title="查看投诉人信息" href="javascript:;" onClick="javascript:;" style="text-decoration:none" class="ml-5">模板 - 用户</a>
+						</td>
+						<td tag="complaint-time">2017/10/01 10:00:00</td>
+						<td tag="complaint-ip-address">2017/10/01 10:00:00</td>
+						<td>
+							<a tag="complaint-status" title="查看投诉" href="javascript:;" onClick="javascript:;" style="text-decoration:none" class="ml-5">模板 - 状态</a>
+						</td>
+						<td tag="complaint-reply-user">管理员</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="assets/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+$(document).ready(function() {
+
+	init_complaintlog();
+});
+
+function init_complaintlog() {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "complaint-get.action",
+		data: {
+			type: "summary"
+		},
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$("#complaint-content tr:visible").empty();
+				var content = result.msgContent;
+				$.each(content, function(index, value) {
+					var template = $("#complaint-entry").clone();
+					template.appendTo("#complaint-content");
+					template.find('[tag="id"]').html(index);
+					template.find('[tag="complaint-problem-title"]').attr("onclick", "problem_show('" + value.problem.uid + "')");
+					template.find('[tag="complaint-problem-title"]').text(value.problem.title);
+					template.find('[tag="complaint-creator"]').attr("onclick", "user_show('" + value.user.uid + "')");
+					template.find('[tag="complaint-creator"]').text(value.user.name);
+					template.find('[tag="complaint-status"]').attr("onclick", "complaint_show('" + value.uid + "')");
+					if (value.createtime <= 0) {
+						template.find('[tag="complaint-time"]').html("不可用");
+					} else {
+						template.find('[tag="complaint-time"]').html(unixTimestamptoDateString(value.createtime));
+					}
+					if (value.createip == null || value.createip == "-1") {
+						template.find('[tag="complaint-ip-address"]').html("不可用");
+					} else {
+						template.find('[tag="complaint-ip-address"]').html(value.createip);
+					}
+					if (value.status == 0) {
+						template.find('[tag="complaint-status"]').text('等待');
+					}
+					if (value.status == 1) {
+						template.find('[tag="complaint-status"]').text('处理中');
+					}
+					if (value.status == 2) {
+						template.find('[tag="complaint-status"]').text('处理完成');
+					}
+					if (value.replycreateuser != null) {
+						template.find('[tag="complaint-reply-user"]').text(value.replycreateuser.name);
+					} else {
+						template.find('[tag="complaint-reply-user"]').text('暂无');
+					}
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+}
+
+/*问题-查看*/
+function problem_show(uid) {
+	layer_show("查看问题详情", "user-problem-detail.html?uid=" + uid, "", "");
+}
+/*用户-查看*/
+function user_show(uid) {
+	layer_show("查看用户详情", "user-show-update.html?op=show&uid=" + uid, "600", "460");
+}
+/*用户-查看*/
+function complaint_show(uid) {
+	layer_show("查看用户详情", "user-complaint-detail.html?uid=" + uid, "", "");
+}
+</script>
+</body>
+</html>

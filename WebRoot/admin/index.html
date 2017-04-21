@@ -1,0 +1,222 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../assets/admin/lib/html5shiv.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="../assets/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>校园互助平台后台</title>
+</head>
+<body>
+<header class="navbar-wrapper">
+	<div class="navbar navbar-fixed-top">
+		<div class="container-fluid cl">
+			<a class="logo navbar-logo f-l mr-10 hidden-xs" href="#">校园互助平台</a>
+			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+			<nav class="nav navbar-nav">
+				<ul class="cl">
+					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" onclick="user_add()"><i class="Hui-iconfont">&#xe60d;</i> 用户</a></li>
+							<li><a href="javascript:;" onclick="admin_add()"><i class="Hui-iconfont">&#xe62d;</i> 管理员</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+			<nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+				<ul class="cl">
+					<li id="privilege-name">加载中</li>
+					<li class="dropDown dropDown_hover">
+						<a id="user-name" href="#" class="dropDown_A">加载中<i class="Hui-iconfont">&#xe6d5;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="#" onClick="admin_show()">个人信息</a></li>
+							<li><a href="#" onclick="admin_logout()">退出</a></li>
+						</ul>
+					</li>
+					<!-- <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li> -->
+					<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+							<li><a href="javascript:;" data-val="blue" title="蓝色">蓝色</a></li>
+							<li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+							<li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+							<li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+							<li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</header>
+<aside class="Hui-aside">
+	<div class="menu_dropdown bk_2">
+	<dl id="menu-info">
+		<dt><i class="Hui-iconfont">&#xe616;</i> 信息管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="academy-list.html" data-title="学院列表" href="javascript:;">学院列表</a></li>
+				<li><a data-href="course-list.html" data-title="专业列表" href="javascript:;">专业列表</a></li>
+				<li><a data-href="grade-list.html" data-title="学年列表" href="javascript:;">学年列表</a></li>
+				<li><a data-href="term-list.html" data-title="学期列表" href="javascript:;">学期列表</a></li>
+				<li><a data-href="location-list.html" data-title="位置列表" href="javascript:;">位置列表</a></li>
+				<li><a data-href="problemtype-list.html" data-title="求助问题类型列表" href="javascript:;">求助问题类型列表</a></li>
+				<li><a data-href="qualificationtype-list.html" data-title="认证类型列表" href="javascript:;">认证类型列表</a></li>
+			</ul>
+		</dd>
+	</dl>
+	<dl id="menu-user">
+		<dt><i class="Hui-iconfont">&#xe60d;</i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="user-list.html" data-title="用户列表" href="javascript:;">用户列表</a></li>
+				<li><a data-href="user-role-list.html" data-title="用户角色列表" href="javascript:;">用户角色列表</a></li>
+				<li><a data-href="qualification-list.html" data-title="认证申请列表" href="javascript:;">认证申请列表</a></li>
+				<li><a data-href="complaint-list.html" data-title="投诉申请列表" href="javascript:;">投诉申请列表</a></li>
+			</ul>
+		</dd>
+	</dl>
+	<dl id="menu-admin">
+		<dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="admin-list.html" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
+				<li><a data-href="admin-privilege-list.html" data-title="管理员角色列表" href="javascript:void(0)">管理员角色列表</a></li>
+			</ul>
+		</dd>
+	</dl>
+	<dl id="menu-system">
+		<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+		<dd>
+			<ul>
+				<li><a data-href="system-config.html" data-title="系统设置" href="javascript:void(0)">系统设置</a></li>
+				<li><a data-href="user-login-log-list.html" data-title="用户登录日志" href="javascript:void(0)">用户登录日志</a></li>
+				<li><a data-href="admin-login-log-list.html" data-title="管理员登录日志" href="javascript:void(0)">管理员登录日志</a></li>
+				<li><a data-href="credit-value-log-list.html" data-title="信用值变化日志" href="javascript:void(0)">信用值变化日志</a></li>
+			</ul>
+		</dd>
+	</dl>
+</div>
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<section class="Hui-article-box">
+	<div id="Hui-tabNav" class="Hui-tabNav hidden-xs">
+		<div class="Hui-tabNav-wp">
+			<ul id="min_title_list" class="acrossTab cl">
+				<li class="active">
+					<span title="系统状态" data-href="platform.html">系统状态</span>
+					<em></em>
+				</li>
+			</ul>
+		</div>
+		<div class="Hui-tabNav-more btn-group"><a id="js-tabNav-prev" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d4;</i></a><a id="js-tabNav-next" class="btn radius btn-default size-S" href="javascript:;"><i class="Hui-iconfont">&#xe6d7;</i></a></div>
+	</div>
+	<div id="iframe_box" class="Hui-article">
+		<div class="show_iframe">
+			<div style="display:none" class="loading"></div>
+			<iframe scrolling="yes" frameborder="0" src="platform.html"></iframe>
+		</div>
+	</div>
+</section>
+
+<div class="contextMenu" id="Huiadminmenu">
+	<ul>
+		<li id="closethis">关闭当前 </li>
+		<li id="closeall">关闭全部 </li>
+	</ul>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../assets/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../assets/admin/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../assets/admin/lib/jquery.contextmenu/jquery.contextmenu.r2.js"></script>
+<script type="text/javascript">
+/*$(function(){
+	$("#min_title_list li").contextMenu('Huiadminmenu', {
+		bindings: {
+			'closethis': function(t) {
+				console.log(t);
+				if(t.find("i")){
+					t.find("i").trigger("click");
+				}		
+			},
+			'closeall': function(t) {
+				alert('Trigger was '+t.id+'\nAction was Email');
+			},
+		}
+	});
+});*/
+
+/*用户-添加*/
+function user_add(title,url,w,h){
+	layer_show("添加用户", "user-add.html", "", "360");
+}
+
+/*管理员-添加*/
+function admin_add(title,url,w,h){
+	layer_show("添加管理员", "admin-add.html", "", "360");
+}
+
+function admin_show(uid) {
+	if (uid == null) {
+		uid = sessionStorage.getItem("onlineUserUid");
+	}
+	layer_show("管理员信息", "admin-show-update.html?op=show&uid=" + uid, "", "360");
+}
+
+function admin_logout() {
+	layer.confirm("确认要退出登录吗?", function(index){
+		$.ajax({
+			type: "POST",
+			url: "admin-logout.action",
+			dataType: "json",
+			success: function(result) {
+				if (result.msgType == "success") {
+					layer.msg("已退出登录", {icon:1, time:1000});
+					setTimeout(function(){
+						location.href="login.html";
+					}, 1000)
+				} else {
+					layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+						icon : 2,
+						shade: 0.4
+					});
+				}
+			},
+			error: function() {
+				layer.msg("connection error", {
+					icon: 2,
+					shade: 0.4
+				});
+			}
+		});
+	});
+}
+
+</script>
+
+<script>
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="/favicon.ico" >
+<link rel="Shortcut Icon" href="/favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="../assets/admin/lib/html5shiv.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="../assets/admin/static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="../assets/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>信用值变化日志列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理 <span class="c-gray en">&gt;</span> 信用值变化日志列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:;" onclick="reset_table_data()" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="text-c"> 日期范围：
+		<input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}' })" id="datemin" class="input-text Wdate" style="width:120px;">
+		-
+		<input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d' })" id="datemax" class="input-text Wdate" style="width:120px;">
+		<input type="text" class="input-text" style="width:250px" placeholder="输入用户名称" id="" name="">
+		<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜日志</button>
+	</div>
+	<br>
+	<table class="table table-border table-bordered table-bg">
+		<thead>
+			<tr>
+				<th scope="col" colspan="6"><span class="l">信用值变化日志列表</span><span class="r">共有数据：<strong id="total-count"></strong> 条</span></th>
+			</tr>
+			<tr class="text-c">
+				<th width="10">ID</th>
+				<th width="90">变化用户</th>
+				<th width="30">变化值</th>
+				<th width="30">最终值</th>
+				<th width="90">变化时间</th>
+				<th width="160">变化原因</th>
+			</tr>
+		</thead>
+		<tbody id="table-content">
+			<tr class="text-c" id="credit-value-log-content" style="display:none">
+				<td tag="id">1</td>
+				<td>
+					<a tag="change-user" title="查看变化者" href="javascript:;" onClick="user_show('10001')" style="text-decoration:none" class="ml-5">模板 - 用户</a>
+				</td>
+				<td tag="change-value">100</td>
+				<td tag="final-value">100</td>
+				<td tag="change-time">2017/01/01 00:00:00</td>
+				<td tag="change-reason">原因</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../assets/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../assets/admin/lib/layer/2.4/layer.js"></script> 
+<script type="text/javascript" src="../assets/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../assets/admin/static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="../assets/admin/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../assets/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script> 
+<script type="text/javascript" src="../assets/admin/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	reset_table_data();
+});
+
+/*管理员-查看*/
+function user_show(uid) {
+	layer_show("查看用户", "user-show-update.html?op=show&uid=" + uid, "", "360");
+}
+
+function reset_table_data() {
+	var hint;
+ 	$.ajax({
+		type: "POST",
+		url: "creditvaluelog-get.action",
+		dataType: "json",
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon: 16,
+				shade: 0.4,
+				time: 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$("tbody tr:visible").empty();
+				var content = result.msgContent;
+				$("#total-count").html(content.length);
+				$.each(content, function(index, value) {
+					var template = $("#credit-value-log-content").clone();
+					template.appendTo("#table-content");
+					template.find('[tag="id"]').html(index);
+					template.find('[tag="change-user"]').attr("onclick", "admin_show('" + value.user.uid + "')");
+					template.find('[tag="change-user"]').text(value.user.name);
+					template.find('[tag="change-value"]').html(value.changevalue > 0 ? "+" + value.changevalue : value.changevalue);
+					template.find('[tag="final-value"]').html(value.finalvalue);
+					if (value.createtime <= 0) {
+						template.find('[tag="change-time"]').html("不可用");
+					} else {
+						template.find('[tag="change-time"]').html(unixTimestamptoDateString(value.createtime));
+					}
+					if (value.reason == null) {
+						template.find('[tag="change-reason"]').html("不可用");
+					} else {
+						template.find('[tag="change-reason"]').html(value.ip);
+					}
+					template.find('[tag="change-reason"]').html(value.reason);
+					template.show();
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	});
+}
+</script>
+</body>
+</html>
