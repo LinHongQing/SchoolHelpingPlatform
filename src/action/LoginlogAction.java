@@ -157,7 +157,9 @@ public class LoginlogAction extends BaseAction implements ServletRequestAware,
 				case Configurations.action_general_UI_ADMIN: {
 					userloginlogService.initParameters();
 					if (uid != null && !"".equals(uid))
-						userloginlogService.setParameters(UserloginlogService.set_userUid, uid);
+						userloginlogService.setParameters(UserloginlogService.set_uid, uid);
+					if (useruid != null && !"".equals(useruid))
+						userloginlogService.setParameters(UserloginlogService.set_userUid, useruid);
 					if (logintime != null && !"".equals(logintime))
 						userloginlogService.setParameters(UserloginlogService.set_loginTime, logintime);
 					if (ip != null && !"".equals(ip))
@@ -170,8 +172,14 @@ public class LoginlogAction extends BaseAction implements ServletRequestAware,
 				default: {
 					TransferOnlineUserBasicInfo user = (TransferOnlineUserBasicInfo) request.getSession().getAttribute(Configurations.session_online_user_key);
 					userloginlogService.initParameters();
+					if (uid != null && !"".equals(uid))
+						userloginlogService.setParameters(UserloginlogService.set_uid, uid);
+					if (logintime != null && !"".equals(logintime))
+						userloginlogService.setParameters(UserloginlogService.set_loginTime, logintime);
+					if (ip != null && !"".equals(ip))
+						userloginlogService.setParameters(UserloginlogService.set_ip, ip);
 					userloginlogService.setParameters(UserloginlogService.set_userUid, user.getUser().getUid());
-					TransferResultInfo<?> rs = adminloginlogService.find();
+					TransferResultInfo<?> rs = userloginlogService.find();
 					sendMsgtoWeb(rs);
 				}
 				}

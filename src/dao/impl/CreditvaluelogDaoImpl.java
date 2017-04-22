@@ -24,27 +24,30 @@ public class CreditvaluelogDaoImpl extends HibernateDaoSupport implements Credit
 		if (transferDbData.getValues().size() <= 0)
 			preHql = "SELECT c FROM Creditvaluelog AS c";
 		else
-			preHql = "SELECT c FROM Creditvaluelog AS c WHERE";
+			preHql = "SELECT c FROM Creditvaluelog AS c WHERE ";
 		for (Integer key : transferDbData.getValues().keySet()) {
 			switch(key) {
 			case uid:
-				preHql += " AND c.uid = ?";
+				preHql += "c.uid = ?";
 				break;
 			case userUid:
-				preHql += " AND c.user.uid = ?";
+				preHql += "c.user.uid = ?";
 				break;
 			case changeValue:
-				preHql += " AND c.changevalue >= ? AND c.changevalue <= ?";
+				preHql += "c.changevalue >= ? AND c.changevalue <= ?";
 				break;
 			case finalValue:
-				preHql += " AND c.finalvalue >= ? AND c.finalvalue <= ?";
+				preHql += "c.finalvalue >= ? AND c.finalvalue <= ?";
 				break;
 			case reason:
-				preHql += " AND c.value = ?";
+				preHql += "c.value = ?";
 				break;
 			case createTime:
-				preHql += " AND c.createtime >= ? AND c.createtime <= ?";
+				preHql += "c.createtime >= ? AND c.createtime <= ?";
 				break;
+			}
+			if (transferDbData.getValues().size() > 1) {
+				preHql += " AND ";
 			}
 		}
 		return preHql;
