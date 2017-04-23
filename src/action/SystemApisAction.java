@@ -105,6 +105,10 @@ public class SystemApisAction extends BaseAction implements
 				throw new IllegalParameterException("which 参数不能为空");
 			switch(which) {
 			case Configurations.action_apis_which_get_users_info: {
+				if (from == null || "".equals(from))
+					throw new IllegalParameterException("from 参数不能为空");
+				if (to == null || "".equals(to))
+					throw new IllegalParameterException("to 参数不能为空");
 				userService.initParameters();
 				userService.setParameters(UserService.set_uid, from);
 				TransferResultInfo<?> rs_from = userService.find(UserService.findMode_summary);
@@ -117,7 +121,8 @@ public class SystemApisAction extends BaseAction implements
 				TransferApiUserInfo from = new TransferApiUserInfo();
 				for (TransferUserInfo transferUserInfo : list_from) {
 					from.setUsrUid(transferUserInfo.getUid());
-					from.setUsrNickname(transferUserInfo.getNickname());
+					from.setUsrNickname(transferUserInfo.getNickname() == null ? "" : transferUserInfo.getNickname());
+					from.setUsrImgResourcePath("");
 				}
 				userService.initParameters();
 				userService.setParameters(UserService.set_uid, to);
@@ -127,11 +132,12 @@ public class SystemApisAction extends BaseAction implements
 					return;
 				}
 				@SuppressWarnings("unchecked")
-				List<TransferUserInfo> list_to = (List<TransferUserInfo>) rs_from.getMsgContent();
+				List<TransferUserInfo> list_to = (List<TransferUserInfo>) rs_to.getMsgContent();
 				TransferApiUserInfo to = new TransferApiUserInfo();
 				for (TransferUserInfo transferUserInfo : list_to) {
 					to.setUsrUid(transferUserInfo.getUid());
-					to.setUsrNickname(transferUserInfo.getNickname());
+					to.setUsrNickname(transferUserInfo.getNickname() == null ? "" : transferUserInfo.getNickname());
+					to.setUsrImgResourcePath("");
 				}
 				Map<String, TransferApiUserInfo> rs_final_content = new HashMap<String, TransferApiUserInfo>();
 				rs_final_content.put("from", from);
@@ -144,7 +150,7 @@ public class SystemApisAction extends BaseAction implements
 			}
 			break;
 			case Configurations.action_apis_which_check_user_access: {
-				
+				System.out.println("uid: " + uid);
 				if (PlatformOnlineUserStorage.getOnlineUserHttpSession(uid) == null) {
 					TransferResultInfo<String> rs = new TransferResultInfo<String>();
 					rs.setMsgType(ResultCodeStorage.type_error);
@@ -163,6 +169,11 @@ public class SystemApisAction extends BaseAction implements
 			}
 		} catch (IllegalParameterException e) {
 			// TODO: handle exception
+			TransferResultInfo<String> rs = new TransferResultInfo<String>();
+			rs.setMsgType(ResultCodeStorage.type_error);
+			rs.setMsgCode(ResultCodeStorage.code_err_generic_server_internal_exception);
+			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_generic_server_internal_exception, e.getMessage()));
+			sendMsgtoWeb(rs);
 		}
 	}
 	

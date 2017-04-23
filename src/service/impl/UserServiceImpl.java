@@ -187,6 +187,7 @@ public class UserServiceImpl implements UserService {
 					TransferUserInfo u = new TransferUserInfo();
 					u.setUid(user.getUid());
 					u.setName(user.getName());
+					u.setNickname(user.getNickname());
 					u.setNum(user.getNum());
 					if (user.getGrade() != null) {
 						TransferGradeInfo grade = new TransferGradeInfo();

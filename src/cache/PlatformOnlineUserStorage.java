@@ -21,7 +21,7 @@ public class PlatformOnlineUserStorage {
 	}
 	
 	public static synchronized HttpSession getOnlineUserHttpSession(String userUid) {
-		return onlineUser.get(onlineUser);
+		return onlineUser.get(userUid);
 	}
 
 }
