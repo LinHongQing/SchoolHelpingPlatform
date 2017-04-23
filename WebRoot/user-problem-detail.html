@@ -24,6 +24,7 @@
 <input class="btn btn-danger radius r btn-complaint" type="button" value="&nbsp;&nbsp;投诉此问题&nbsp;&nbsp;" onclick="complaint_problem();">
 	<form action="" method="post" style="padding: 20px" class="form form-horizontal" id="form-problem">
 		<input type="hidden" name="uid" id="uid">
+		<input type="hidden" id="to-user-uid">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">标题：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -40,6 +41,12 @@
 			<label class="form-label col-xs-4 col-sm-3">问题位置：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<span id="span-problem-location">位置</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">发布人：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span id="span-problem-creator">用户</span>
 			</div>
 		</div>
 		<div class="row cl">
@@ -216,6 +223,8 @@ function init_problem(uid) {
 				$("#uid").val(value.uid);
 				$("#span-title").html(value.title);
 				$("#span-problem-type").html(value.problemtype.name);
+				$("#to-user-uid").val(value.createuser.uid);
+				$("#span-problem-creator").html(value.createuser.name);
 				$("#span-problem-location").html(value.location.name);
 				if (value.createtime <= 0) {
 					$("#span-problem-create-time").html("不可用");
@@ -451,6 +460,37 @@ function check_problem_owner(uid) {
 }
 
 function chat() {
+	var to_user_uid = $("#to-user-uid").val();
+	if (to_user_uid == null || to_user_uid == "") {
+		layer.msg("to_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	var from_user_uid = sessionStorage.getItem("userUid");
+	if (from_user_uid == null || from_user_uid == "") {
+		layer.msg("from_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			t: "chatsystempath"
+		},
+		dataType: "json",
+		url: "init.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				window.open(result.msgContent + "?from=" + from_user_uid + "&to=" + to_user_uid);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
 }
 
 function complaint_problem() {
