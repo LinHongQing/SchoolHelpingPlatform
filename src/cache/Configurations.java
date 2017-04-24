@@ -8,8 +8,8 @@ public final class Configurations {
 	public static final short db_entry_invalid = 0;
 	public static final short db_entry_valid = 1;
 	public static final String db_entry_default_user_role_uid = "role_default";
+	public static final String db_entry_default_admin_privilege_uid = "priv_default";
 	public static final int db_entry_default_user_credit_value = 100;
-	public static final String db_entry_default_user_password = "P@ssw0rd";
 	
 	public static final int db_complaintrequest_status_waiting = 0;
 	public static final int db_complaintrequest_status_processing = 1;
