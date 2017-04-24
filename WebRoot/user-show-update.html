@@ -16,7 +16,7 @@
 <script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
-<title>管理员</title>
+<title>基本信息</title>
 </head>
 <body>
 <article class="page-container">
@@ -123,7 +123,8 @@
 			</div>
 			<div class="row cl">
 				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-					<input id="btn-update" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;修改&nbsp;&nbsp;" onclick="change_to_update()">
+					<input id="btn-chat" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;与 TA 聊天&nbsp;&nbsp;" onclick="chat()">
+					<input id="btn-update" class="btn btn-primary radius" type="button" value="&nbsp;&nbsp;修改&nbsp;&nbsp;" onclick="change_to_update()" style="display:none">
 					<input id="btn-submit" class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" style="display:none">
 				</div>
 			</div>
@@ -286,6 +287,40 @@ function change_to_update() {
 	$("#span-grade").show();
 	$("#span-location").show();
 	$("#btn-submit").show();
+}
+
+function chat() {
+	var to_user_uid = $("#uid").val();
+	if (to_user_uid == null || to_user_uid == "") {
+		layer.msg("to_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	var from_user_uid = sessionStorage.getItem("userUid");
+	if (from_user_uid == null || from_user_uid == "") {
+		layer.msg("from_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			t: "chatsystempath"
+		},
+		dataType: "json",
+		url: "init.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				window.open(result.msgContent + "?from=" + from_user_uid + "&to=" + to_user_uid);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
 }
 
 function init_user_academy() {
@@ -495,6 +530,10 @@ function init_user(uid) {
 			// do things here
 			var content = result.msgContent;
 			$.each(content, function(index, value) {
+				var user_uid = sessionStorage.getItem("userUid");
+				if (user_uid == value.uid) {
+					$("#btn-update").show();
+				}
 				$("#span-num").html(value.num);
 				$("#span-name").html(value.name);
 				$("#name").val(value.name);
