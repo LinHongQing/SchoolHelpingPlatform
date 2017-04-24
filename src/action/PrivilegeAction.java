@@ -22,6 +22,7 @@ import cache.ResultCodeStorage;
 
 import com.google.gson.Gson;
 
+import exception.IllegalOperationException;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
 import exception.PermissionDeniedException;
@@ -213,6 +214,8 @@ public class PrivilegeAction extends BaseAction implements ServletRequestAware,
 			case delete: {
 				if (uid == null || "".equals(uid))
 					throw new IllegalParameterException("uid 参数不能为空");
+				if (Configurations.db_entry_default_admin_privilege_uid.equals(uid))
+					throw new IllegalOperationException("该权限无法删除");
 				TransferResultInfo<?> rs = privilegeService.delete();
 				sendMsgtoWeb(rs);
 			}
@@ -232,6 +235,13 @@ public class PrivilegeAction extends BaseAction implements ServletRequestAware,
 			rs.setMsgType(ResultCodeStorage.type_error);
 			rs.setMsgCode(ResultCodeStorage.code_err_invalid_parameter);
 			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_invalid_parameter, e.getMessage()));
+			sendMsgtoWeb(rs);
+		} catch (IllegalOperationException e) {
+			e.printStackTrace();
+			TransferResultInfo<String> rs = new TransferResultInfo<String>();
+			rs.setMsgType(ResultCodeStorage.type_error);
+			rs.setMsgCode(ResultCodeStorage.code_err_illegal_operation);
+			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_illegal_operation, e.getMessage()));
 			sendMsgtoWeb(rs);
 		} catch (NoLoginException e) {
 			e.printStackTrace();
