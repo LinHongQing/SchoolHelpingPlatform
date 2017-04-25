@@ -93,4 +93,8 @@ public final class Configurations {
 	
 	public static final String action_apis_which_get_users_info = "getChatUsersInfo";
 	public static final String action_apis_which_check_user_access = "checkUserAccess";
+	public static final String action_apis_which_notify_user_unread_message = "notifyUnreadMessage";
+	
+	public static final String action_platform_opt_get = "get";
+	public static final String action_platform_opt_clear = "clear";
 }

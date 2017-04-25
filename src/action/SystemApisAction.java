@@ -20,6 +20,7 @@ import bean.TransferResultInfo;
 import bean.TransferUserInfo;
 import cache.Configurations;
 import cache.PlatformOnlineUserStorage;
+import cache.PlatformUnreadChatInfoStorage;
 import cache.ResultCodeStorage;
 import dao.UserService;
 import exception.IllegalParameterException;
@@ -38,6 +39,7 @@ public class SystemApisAction extends BaseAction implements
 	private String uid;
 	private String from;
 	private String to;
+	private String count;
 
 	public String getWhich() {
 		return which;
@@ -69,6 +71,14 @@ public class SystemApisAction extends BaseAction implements
 
 	public void setTo(String to) {
 		this.to = to;
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
 	}
 
 	public HttpServletRequest getRequest() {
@@ -150,7 +160,8 @@ public class SystemApisAction extends BaseAction implements
 			}
 			break;
 			case Configurations.action_apis_which_check_user_access: {
-				System.out.println("uid: " + uid);
+				if (uid == null || "".equals(uid))
+					throw new IllegalParameterException("uid 参数不能为空");
 				if (PlatformOnlineUserStorage.getOnlineUserHttpSession(uid) == null) {
 					TransferResultInfo<String> rs = new TransferResultInfo<String>();
 					rs.setMsgType(ResultCodeStorage.type_error);
@@ -162,6 +173,25 @@ public class SystemApisAction extends BaseAction implements
 					rs.setMsgContent("有该用户登录信息");
 					sendMsgtoWeb(rs);
 				}
+			}
+			break;
+			case Configurations.action_apis_which_notify_user_unread_message: {
+				if (from == null || "".equals(from))
+					throw new IllegalParameterException("from 参数不能为空");
+				if (to == null || "".equals(to))
+					throw new IllegalParameterException("to 参数不能为空");
+				if (count == null || "".equals(count))
+					throw new IllegalParameterException("count 参数不能为空");
+				try {
+					Integer.parseInt(count);
+				} catch (NumberFormatException e) {
+					throw new IllegalParameterException("count 参数无效");
+				}
+				PlatformUnreadChatInfoStorage.setUnreadChatInfoCount(to, from, Integer.parseInt(count));
+				TransferResultInfo<String> rs = new TransferResultInfo<String>();
+				rs.setMsgType(ResultCodeStorage.type_success);
+				rs.setMsgContent("OK");
+				sendMsgtoWeb(rs);
 			}
 			break;
 			default:

@@ -300,27 +300,7 @@ function chat() {
 		layer.msg("from_user_uid 参数异常",{icon:2,time:1000});
 		return;
 	}
-	$.ajax({
-		type: "post",
-		data: {
-			t: "chatsystempath"
-		},
-		dataType: "json",
-		url: "init.action",
-		success: function(result) {
-			if (result.msgType == "success") {
-				window.open(result.msgContent + "?from=" + from_user_uid + "&to=" + to_user_uid);
-			} else {
-				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
-					icon : 2,
-					shade: 0.4
-				});
-			}
-		},
-		error: function() {
-			layer.msg("connection error!",{icon:2,time:1000});
-		}
-	});
+	window.open(sessionStorage.getItem("chatBasePath") + "?from=" + from_user_uid + "&to=" + to_user_uid);
 }
 
 function init_user_academy() {

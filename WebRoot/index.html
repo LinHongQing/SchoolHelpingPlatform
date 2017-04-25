@@ -11,6 +11,7 @@
 <script type="text/javascript" src="lib/respond.min.js"></script>
 <![endif]-->
 <link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/static/css/custom.css" />
 <link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.min.css" />
 <!--[if lt IE 9]>
 <link href="static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css" />
@@ -35,6 +36,12 @@
 					</li>
 				</ul>
 				<ul class="cl login" style="display:none">
+					<li id="Hui-msg" class="dropDown dropDown_hover">
+						<a href="#" title="未读聊天消息, 点击可刷新" onclick="get_unread_chat_msg()"><span class="badge badge-danger unread-chat-msg-total-count">0</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow unread-chat-msg-total-content">
+							<li class="unread-chat-msg-entry" style="display:none"><span class="badge badge-danger unread-chat-msg-count">0</span><a class="unread-chat-msg-user" onclick="chat(this, to_user_uid)"></a></li>
+						</ul>
+					</li>
 					<li class="dropDown dropDown_hover">
 						<a href="#" class="dropDown_A"><span id="user-name">学生昵称</span> <i class="Hui-iconfont">&#xe6d5; </i></a>
 						<ul class="dropDown-menu menu radius box-shadow">
@@ -185,6 +192,7 @@
 $(document).ready(function(){
 
 	check_login();
+	init_chat_base_path();
 	
 	//选项卡
 	$.Huitab("#tab_problem_list .tabBar span","#tab_problem_list .tabCon","current","click","0");
@@ -224,6 +232,103 @@ function user_logout() {
 				});
 			}
 		});
+	});
+}
+
+function chat(obj, to_user_uid) {
+	if (to_user_uid == null || to_user_uid == "") {
+		layer.msg("to_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	var from_user_uid = sessionStorage.getItem("userUid");
+	if (from_user_uid == null || from_user_uid == "") {
+		layer.msg("from_user_uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	$.ajax({
+		type: "post",
+		data: {
+			t: "chatsystempath"
+		},
+		dataType: "json",
+		url: "init.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+
+			 	$.ajax({
+					type: "POST",
+					url: "platform-unread.action",
+					data: {
+						opt: "clear",
+						toUid: to_user_uid
+					},
+					dataType: "json",
+					success: function(result) {
+			 			if (result.msgType == "success") {
+			 				window.open(sessionStorage.getItem("chatBasePath") + "?from=" + from_user_uid + "&to=" + to_user_uid);
+			 				$(obj).parent("li").remove();
+			 				$(".unread-chat-msg-total-count").html($(".unread-chat-msg-total-count").html() - 1);
+						} else {
+							layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+								icon : 2,
+								shade: 0.4
+							});
+						}
+					},
+					error: function() {
+						layer.msg("connection error", {
+							icon : 2,
+							shade: 0.4
+						});
+					}
+				});
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
+		}
+	});
+}
+
+function get_unread_chat_msg() {
+ 	$.ajax({
+		type: "POST",
+		url: "platform-unread.action",
+		data: {
+			opt: "get"
+		},
+		dataType: "json",
+		success: function(result) {
+ 			if (result.msgType == "success") {
+ 				$(".unread-chat-msg-total-content li:gt(0)").remove();
+				var content = result.msgContent;
+				$(".unread-chat-msg-total-count").html(content.length);
+				$.each(content, function(index, value) {
+					var template = $(".unread-chat-msg-entry:eq(0)").clone();
+					template.appendTo(".unread-chat-msg-total-content");
+					template.find(".unread-chat-msg-user").attr("onclick", "chat(this, '" + value.userUid + "')");
+					template.find(".unread-chat-msg-user").text(value.userName);
+					template.find(".unread-chat-msg-count").html(value.count);
+					template.show();
+				});
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error", {
+				icon : 2,
+				shade: 0.4
+			});
+		}
 	});
 }
 
@@ -276,6 +381,7 @@ function check_login() {
 			 					$("#user-name").html(content.user.name);
 			 				$("#role-name").html(content.user.role.name);
 			 				$(".login").show();
+			 				get_unread_chat_msg();
 			 				reset_table_data("all");
 						} else {
 							layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
@@ -298,6 +404,30 @@ function check_login() {
 				icon : 2,
 				shade: 0.4
 			});
+		}
+	});
+}
+
+function init_chat_base_path() {
+	$.ajax({
+		type: "post",
+		data: {
+			t: "chatsystempath"
+		},
+		dataType: "json",
+		url: "init.action",
+		success: function(result) {
+			if (result.msgType == "success") {
+				sessionStorage.setItem("chatBasePath", result.msgContent);
+			} else {
+				layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+					icon : 2,
+					shade: 0.4
+				});
+			}
+		},
+		error: function() {
+			layer.msg("connection error!",{icon:2,time:1000});
 		}
 	});
 }
@@ -329,9 +459,9 @@ function user_creditvaluelog() {
 }
 
 function reset_table_data(w) {
+	var hint;
 	switch(w) {
 	case 'all': {
-	var hint;
  	$.ajax({
 		type: "POST",
 		url: "problem-get.action",
@@ -394,7 +524,6 @@ function reset_table_data(w) {
 	}
 	break;
 	case 'recomand': {
-	var hint;
  	$.ajax({
 		type: "POST",
 		url: "problem-get.action",
@@ -458,7 +587,6 @@ function reset_table_data(w) {
 	}
 	break;
 	case 'myproblem':{
-	var hint;
  	$.ajax({
 		type: "POST",
 		url: "problem-get.action",

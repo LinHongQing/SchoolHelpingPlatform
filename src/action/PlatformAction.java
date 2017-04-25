@@ -1,6 +1,9 @@
 package action;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,10 +19,14 @@ import com.google.gson.Gson;
 import bean.TransferOnlineUserBasicInfo;
 import bean.TransferPlatformStatisticsInfo;
 import bean.TransferResultInfo;
+import bean.TransferUserInfo;
+import bean.TransferUserUnreadInfo;
 import cache.Configurations;
 import cache.PlatformOnlineUserStorage;
 import cache.PlatformStatistics;
+import cache.PlatformUnreadChatInfoStorage;
 import cache.ResultCodeStorage;
+import dao.UserService;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
 
@@ -32,11 +39,23 @@ public class PlatformAction extends BaseAction implements ServletResponseAware, 
 	
 	private static final int statistic = 0;
 	private static final int user = 1;
+	private static final int unread = 2;
 	
 	private HttpServletResponse response;
 	private HttpServletRequest request;
 	
+	private String toUid;
+	
+	private String opt;
 	private String ui;
+
+	public String getToUid() {
+		return toUid;
+	}
+
+	public void setToUid(String toUid) {
+		this.toUid = toUid;
+	}
 
 	public String getUi() {
 		return ui;
@@ -44,6 +63,14 @@ public class PlatformAction extends BaseAction implements ServletResponseAware, 
 
 	public void setUi(String ui) {
 		this.ui = ui;
+	}
+
+	public String getOpt() {
+		return opt;
+	}
+
+	public void setOpt(String opt) {
+		this.opt = opt;
 	}
 
 	public HttpServletResponse getResponse() {
@@ -73,13 +100,17 @@ public class PlatformAction extends BaseAction implements ServletResponseAware, 
 		// TODO Auto-generated method stub
 		this.request = request;
 	}
-	
+
 	public void statistic() {
 		operations(statistic);
 	}
 	
 	public void user() {
 		operations(user);
+	}
+	
+	public void unread() {
+		operations(unread);
 	}
 	
 	private void operations(int op) {
@@ -116,6 +147,62 @@ public class PlatformAction extends BaseAction implements ServletResponseAware, 
 				rs.setMsgCode(ResultCodeStorage.code_success);
 				rs.setMsgContent(user);
 				sendMsgtoWeb(rs);
+			}
+			break;
+			case unread: {
+				if (opt == null || "".equals(opt))
+					opt = Configurations.action_platform_opt_get;
+				TransferOnlineUserBasicInfo user = (TransferOnlineUserBasicInfo) request.getSession().getAttribute(Configurations.session_online_user_key);
+				switch(opt) {
+				case Configurations.action_platform_opt_clear: {
+					if (toUid == null || "".equals(toUid))
+						throw new IllegalParameterException("toUid 参数不能为空");
+					PlatformUnreadChatInfoStorage.removeUnreadChatInfoCount(user.getUser().getUid(), toUid);
+					TransferResultInfo<List<TransferUserUnreadInfo>> rs = new TransferResultInfo<List<TransferUserUnreadInfo>>();
+					rs.setMsgType(ResultCodeStorage.type_success);
+					rs.setMsgCode(ResultCodeStorage.code_success);
+					sendMsgtoWeb(rs);
+				}
+				break;
+				case Configurations.action_platform_opt_get:
+				default: {
+					List<TransferUserUnreadInfo> list_unread = new ArrayList<TransferUserUnreadInfo>();
+					Map<String, Integer> map_unread = PlatformUnreadChatInfoStorage.getUnreadChatInfo(user.getUser().getUid());
+					if (map_unread != null && map_unread.size() > 0) {
+						for(String uid : map_unread.keySet()) {
+							TransferUserUnreadInfo unreadInfo = new TransferUserUnreadInfo();
+							unreadInfo.setUserUid(uid);
+							TransferOnlineUserBasicInfo unreadUser = 
+									PlatformOnlineUserStorage.getOnlineUserHttpSession(uid) == null ? 
+											null
+											: 
+											(TransferOnlineUserBasicInfo) PlatformOnlineUserStorage.getOnlineUserHttpSession(uid).getAttribute(Configurations.session_online_user_key);
+							if (unreadUser != null && unreadUser.getUser() != null) {
+								unreadInfo.setUserName(unreadUser.getUser().getName());
+							} else {
+								userService.initParameters();
+								userService.setParameters(UserService.set_uid, uid);
+								TransferResultInfo<?> rs_user = userService.find(UserService.findMode_summary);
+								if(ResultCodeStorage.type_success.equals(rs_user.getMsgType())) {
+									@SuppressWarnings("unchecked")
+									List<TransferUserInfo> list_user = (List<TransferUserInfo>) rs_user.getMsgContent();
+									for (TransferUserInfo transferUserInfo : list_user) {
+										unreadInfo.setUserName(transferUserInfo.getName());
+									}
+								}
+							}
+							int count = map_unread.get(uid);
+							unreadInfo.setCount(count);
+							list_unread.add(unreadInfo);
+						}
+					}
+					TransferResultInfo<List<TransferUserUnreadInfo>> rs = new TransferResultInfo<List<TransferUserUnreadInfo>>();
+					rs.setMsgType(ResultCodeStorage.type_success);
+					rs.setMsgCode(ResultCodeStorage.code_success);
+					rs.setMsgContent(list_unread);
+					sendMsgtoWeb(rs);
+				}
+				}
 			}
 			break;
 			default: {
