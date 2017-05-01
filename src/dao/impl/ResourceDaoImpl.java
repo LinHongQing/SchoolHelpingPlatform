@@ -79,7 +79,7 @@ public class ResourceDaoImpl extends HibernateDaoSupport implements ResourceDao 
 				resource.setName(s_value);
 				break;
 			case type:
-				resource.setType(Integer.valueOf(s_value));
+				resource.setType(Short.valueOf(s_value));
 				break;
 			case value:
 				resource.setValue(s_value);
@@ -107,7 +107,7 @@ public class ResourceDaoImpl extends HibernateDaoSupport implements ResourceDao 
 				resource.setName(s_value);
 				break;
 			case type:
-				resource.setType(Integer.valueOf(s_value));
+				resource.setType(Short.valueOf(s_value));
 				break;
 			case value:
 				resource.setValue(s_value);

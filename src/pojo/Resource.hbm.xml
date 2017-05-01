@@ -12,7 +12,7 @@
         <property name="id" type="java.lang.Integer" insert="false" update="false">
             <column name="id" not-null="true" unique="true" />
         </property>
-        <property name="type" type="java.lang.Integer">
+        <property name="type" type="java.lang.Short">
             <column name="type" not-null="true" />
         </property>
         <property name="name" type="java.lang.String">

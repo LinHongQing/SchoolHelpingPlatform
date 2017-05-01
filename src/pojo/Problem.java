@@ -25,7 +25,7 @@ public class Problem implements java.io.Serializable {
 	private String resourceid;
 	private Integer createtime;
 	private String createip;
-	private Integer status;
+	private Short status;
 	private Short isvalid;
 	private Set solves = new HashSet(0);
 	private Set complaintrequests = new HashSet(0);
@@ -39,7 +39,7 @@ public class Problem implements java.io.Serializable {
 	/** minimal constructor */
 	public Problem(Location location, User user, Problemtype problemtype,
 			Integer id, String title, String description, Integer createtime,
-			String createip, Integer status, Short isvalid) {
+			String createip, Short status, Short isvalid) {
 		this.location = location;
 		this.user = user;
 		this.problemtype = problemtype;
@@ -57,7 +57,7 @@ public class Problem implements java.io.Serializable {
 			Problemtype problemtype, Integer id, String preferday,
 			Integer preferstart, Integer preferend, String title,
 			String description, String resourceid, Integer createtime,
-			String createip, Integer status, Short isvalid, Set solves,
+			String createip, Short status, Short isvalid, Set solves,
 			Set complaintrequests) {
 		this.solve = solve;
 		this.location = location;
@@ -192,11 +192,11 @@ public class Problem implements java.io.Serializable {
 		this.createip = createip;
 	}
 
-	public Integer getStatus() {
+	public Short getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(Short status) {
 		this.status = status;
 	}
 

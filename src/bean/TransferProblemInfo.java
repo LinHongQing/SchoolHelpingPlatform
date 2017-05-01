@@ -14,7 +14,7 @@ public class TransferProblemInfo {
 	private String resourceuid;
 	private String createip;
 	private int createtime;
-	private int status;
+	private short status;
 	private TransferSolveInfo solved;
 	public String getUid() {
 		return uid;
@@ -94,10 +94,10 @@ public class TransferProblemInfo {
 	public void setCreatetime(int createtime) {
 		this.createtime = createtime;
 	}
-	public int getStatus() {
+	public short getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(short status) {
 		this.status = status;
 	}
 	public TransferSolveInfo getSolved() {

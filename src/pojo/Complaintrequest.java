@@ -17,7 +17,7 @@ public class Complaintrequest implements java.io.Serializable {
 	private String createip;
 	private String description;
 	private String resourceid;
-	private Integer status;
+	private Short status;
 	private String replydescription;
 	private String replyresourceid;
 	private Integer replycreatetime;
@@ -33,7 +33,7 @@ public class Complaintrequest implements java.io.Serializable {
 	/** minimal constructor */
 	public Complaintrequest(User user, Problem problem, Integer id,
 			Integer createtime, String createip, String description,
-			Integer status, Short isvalid) {
+			Short status, Short isvalid) {
 		this.user = user;
 		this.problem = problem;
 		this.id = id;
@@ -47,7 +47,7 @@ public class Complaintrequest implements java.io.Serializable {
 	/** full constructor */
 	public Complaintrequest(User user, Admin admin, Problem problem,
 			Integer id, Integer createtime, String createip,
-			String description, String resourceid, Integer status,
+			String description, String resourceid, Short status,
 			String replydescription, String replyresourceid,
 			Integer replycreatetime, String replycreateip, Short isvalid) {
 		this.user = user;
@@ -140,11 +140,11 @@ public class Complaintrequest implements java.io.Serializable {
 		this.resourceid = resourceid;
 	}
 
-	public Integer getStatus() {
+	public Short getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(Short status) {
 		this.status = status;
 	}
 

@@ -141,10 +141,10 @@ public class QualificationrequestDaoImpl extends HibernateDaoSupport implements 
 				qualificationRequest.setRequesttime(Integer.valueOf(value));
 				break;
 			case checkingStatus:
-				qualificationRequest.setCheckingstatus(Integer.valueOf(value));
+				qualificationRequest.setCheckingstatus(Short.valueOf(value));
 				break;
 			case checkingType:
-				qualificationRequest.setCheckingtype(Integer.valueOf(value));
+				qualificationRequest.setCheckingtype(Short.valueOf(value));
 				break;
 			case checkingIp:
 				qualificationRequest.setCheckingip(value);
@@ -199,10 +199,10 @@ public class QualificationrequestDaoImpl extends HibernateDaoSupport implements 
 				qualificationRequest.setRequesttime(Integer.valueOf(value));
 				break;
 			case checkingStatus:
-				qualificationRequest.setCheckingstatus(Integer.valueOf(value));
+				qualificationRequest.setCheckingstatus(Short.valueOf(value));
 				break;
 			case checkingType:
-				qualificationRequest.setCheckingtype(Integer.valueOf(value));
+				qualificationRequest.setCheckingtype(Short.valueOf(value));
 				break;
 			case checkingIp:
 				qualificationRequest.setCheckingip(value);

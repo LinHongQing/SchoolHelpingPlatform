@@ -142,7 +142,7 @@ public class ComplaintrequestDaoImpl extends HibernateDaoSupport implements Comp
 				complaintRequest.setCreatetime(Integer.valueOf(value));
 				break;
 			case status:
-				complaintRequest.setStatus(Integer.valueOf(value));
+				complaintRequest.setStatus(Short.valueOf(value));
 				break;
 			case replyDescription:
 				complaintRequest.setReplydescription(value);
@@ -199,7 +199,7 @@ public class ComplaintrequestDaoImpl extends HibernateDaoSupport implements Comp
 				complaintRequest.setCreatetime(Integer.valueOf(value));
 				break;
 			case status:
-				complaintRequest.setStatus(Integer.valueOf(value));
+				complaintRequest.setStatus(Short.valueOf(value));
 				break;
 			case replyDescription:
 				complaintRequest.setReplydescription(value);

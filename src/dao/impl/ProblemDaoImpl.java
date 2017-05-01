@@ -167,7 +167,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 				problem.setCreatetime(Integer.valueOf(value));
 				break;
 			case status:
-				problem.setStatus(Integer.valueOf(value));
+				problem.setStatus(Short.valueOf(value));
 				break;
 			case solvedUid:
 				Solve solve = new Solve();
@@ -233,7 +233,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 				problem.setCreatetime(Integer.valueOf(value));
 				break;
 			case status:
-				problem.setStatus(Integer.valueOf(value));
+				problem.setStatus(Short.valueOf(value));
 				break;
 			case solvedUid:
 				Solve solve = new Solve();

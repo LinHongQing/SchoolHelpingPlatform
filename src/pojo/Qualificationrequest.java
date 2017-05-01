@@ -17,8 +17,8 @@ public class Qualificationrequest implements java.io.Serializable {
 	private String resourceid;
 	private Integer requesttime;
 	private String requestip;
-	private Integer checkingstatus;
-	private Integer checkingtype;
+	private Short checkingstatus;
+	private Short checkingtype;
 	private Integer checkingtime;
 	private String checkingip;
 	private Short isvalid;
@@ -32,7 +32,7 @@ public class Qualificationrequest implements java.io.Serializable {
 	/** minimal constructor */
 	public Qualificationrequest(User user, Qualificationtype qualificationtype,
 			Integer id, String description, Integer requesttime,
-			String requestip, Integer checkingstatus, Short isvalid) {
+			String requestip, Short checkingstatus,	Short isvalid) {
 		this.user = user;
 		this.qualificationtype = qualificationtype;
 		this.id = id;
@@ -46,8 +46,8 @@ public class Qualificationrequest implements java.io.Serializable {
 	/** full constructor */
 	public Qualificationrequest(User user, Qualificationtype qualificationtype,
 			Admin admin, Integer id, String description, String resourceid,
-			Integer requesttime, String requestip, Integer checkingstatus,
-			Integer checkingtype, Integer checkingtime, String checkingip,
+			Integer requesttime, String requestip, Short checkingstatus,
+			Short checkingtype, Integer checkingtime, String checkingip,
 			Short isvalid) {
 		this.user = user;
 		this.qualificationtype = qualificationtype;
@@ -138,19 +138,19 @@ public class Qualificationrequest implements java.io.Serializable {
 		this.requestip = requestip;
 	}
 
-	public Integer getCheckingstatus() {
+	public Short getCheckingstatus() {
 		return this.checkingstatus;
 	}
 
-	public void setCheckingstatus(Integer checkingstatus) {
+	public void setCheckingstatus(Short checkingstatus) {
 		this.checkingstatus = checkingstatus;
 	}
 
-	public Integer getCheckingtype() {
+	public Short getCheckingtype() {
 		return this.checkingtype;
 	}
 
-	public void setCheckingtype(Integer checkingtype) {
+	public void setCheckingtype(Short checkingtype) {
 		this.checkingtype = checkingtype;
 	}
 

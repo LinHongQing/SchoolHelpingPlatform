@@ -10,7 +10,7 @@ public class Resource implements java.io.Serializable {
 
 	private String uid;
 	private Integer id;
-	private Integer type;
+	private Short type;
 	private String name;
 	private String value;
 	private Short isvalid;
@@ -22,7 +22,7 @@ public class Resource implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Resource(Integer id, Integer type, String value, Short isvalid) {
+	public Resource(Integer id, Short type, String value, Short isvalid) {
 		this.id = id;
 		this.type = type;
 		this.value = value;
@@ -30,7 +30,7 @@ public class Resource implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Resource(Integer id, Integer type, String name, String value,
+	public Resource(Integer id, Short type, String name, String value,
 			Short isvalid) {
 		this.id = id;
 		this.type = type;
@@ -57,11 +57,11 @@ public class Resource implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public Integer getType() {
+	public Short getType() {
 		return this.type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(Short type) {
 		this.type = type;
 	}
 

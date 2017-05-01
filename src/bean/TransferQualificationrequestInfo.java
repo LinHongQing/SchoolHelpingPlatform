@@ -8,8 +8,8 @@ public class TransferQualificationrequestInfo {
 	private String description;
 	private int requesttime;
 	private String requestip;
-	private int checkingstatus;
-	private int checkingtype;
+	private short checkingstatus;
+	private short checkingtype;
 	private int checkingtime;
 	private String checkingip;
 	private TransferAdminInfo checkinguser;
@@ -55,16 +55,16 @@ public class TransferQualificationrequestInfo {
 	public void setRequestip(String requestip) {
 		this.requestip = requestip;
 	}
-	public int getCheckingstatus() {
+	public short getCheckingstatus() {
 		return checkingstatus;
 	}
-	public void setCheckingstatus(int checkingstatus) {
+	public void setCheckingstatus(short checkingstatus) {
 		this.checkingstatus = checkingstatus;
 	}
-	public int getCheckingtype() {
+	public short getCheckingtype() {
 		return checkingtype;
 	}
-	public void setCheckingtype(int checkingtype) {
+	public void setCheckingtype(short checkingtype) {
 		this.checkingtype = checkingtype;
 	}
 	public int getCheckingtime() {

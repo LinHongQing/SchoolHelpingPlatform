@@ -8,7 +8,7 @@ public class TransferComplaintrequestInfo {
 	private TransferProblemInfo problem;
 	private String description;
 	private String resourceuid;
-	private int status;
+	private short status;
 	private String replydescription;
 	private String replyresourceuid;
 	private String replycreateip;
@@ -56,10 +56,10 @@ public class TransferComplaintrequestInfo {
 	public void setResourceuid(String resourceuid) {
 		this.resourceuid = resourceuid;
 	}
-	public int getStatus() {
+	public short getStatus() {
 		return status;
 	}
-	public void setStatus(int status) {
+	public void setStatus(short status) {
 		this.status = status;
 	}
 	public String getReplydescription() {
