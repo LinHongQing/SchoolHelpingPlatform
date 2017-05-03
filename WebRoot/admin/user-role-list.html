@@ -149,7 +149,7 @@ function reset_table_data() {
  					template.appendTo("#table-content");
 					template.find('[tag="id"]').html(index);
 					template.find('[tag="name"]').html(value.name);
-					template.find('[tag="role-value"]').html(value.privilegevalue);
+					template.find('[tag="role-value"]').html(value.rolevalue);
 					template.find('[tag="create-user"]').attr("onclick", "admin_show('" + value.createuser.uid + "')");
 					template.find('[tag="create-user"]').text(value.createuser.name);
 					if (value.createtime <= 0) {

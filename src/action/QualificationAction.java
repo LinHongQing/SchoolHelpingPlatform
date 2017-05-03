@@ -23,6 +23,7 @@ import bean.TransferResultInfo;
 import cache.Configurations;
 import cache.PlatformStatistics;
 import cache.ResultCodeStorage;
+import exception.IllegalOperationException;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
 import exception.PermissionDeniedException;
@@ -258,7 +259,22 @@ public class QualificationAction extends BaseAction implements
 					throw new IllegalParameterException("uid 参数不能为空");
 				if (checkingstatus == null || "".equals(checkingstatus))
 					throw new IllegalParameterException("checkingstatus 参数不能为空");
-				int int_checkingStatus;
+				qualificationrequestService.initParameters();
+				qualificationrequestService.setParameters(QualificationrequestService.set_uid, uid);
+				TransferResultInfo<?> rs = qualificationrequestService.find(QualificationrequestService.find_summary);
+				if (!ResultCodeStorage.type_success.equals(rs.getMsgType())) {
+					sendMsgtoWeb(rs);
+					return;
+				}
+				@SuppressWarnings("unchecked")
+				List<TransferQualificationrequestInfo> list_qualreq = (List<TransferQualificationrequestInfo>) rs.getMsgContent();
+				int int_checkingStatus = Configurations.invalid_int;
+				for (TransferQualificationrequestInfo transferQualificationrequestInfo : list_qualreq) {
+					int_checkingStatus = transferQualificationrequestInfo.getCheckingstatus();
+				}
+				if (int_checkingStatus != Configurations.db_qualificationrequest_checkingstatus_waiting) {
+					throw new IllegalOperationException("申请当前状态不能执行此操作");
+				}
 				try {
 					switch(int_checkingStatus = Integer.parseInt(checkingstatus)) {
 					case Configurations.db_qualificationrequest_checkingstatus_fail:

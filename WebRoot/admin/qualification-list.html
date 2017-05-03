@@ -64,8 +64,8 @@
 				<td tag="qualification-status">状态</td>
 				<td tag="manage" class="td-manage">
 					<a tag="show" title="查看" href="javascript:;" onclick="qualification_operation('show', '10001')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe665;</i></a>
-					<a tag="accept" title="通过" href="javascript:;" onclick="qualification_operation('accept', '10001')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e1;</i></a>
-					<a tag="refuse" title="拒绝" href="javascript:;" onclick="qualification_operation('refuse', '10001')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe631;</i></a>
+					<a tag="accept" title="通过" href="javascript:;" onclick="qualification_operation('accept', '10001')" class="ml-5" style="text-decoration:none;display:none"><i class="Hui-iconfont">&#xe6e1;</i></a>
+					<a tag="refuse" title="拒绝" href="javascript:;" onclick="qualification_operation('refuse', '10001')" class="ml-5" style="text-decoration:none;display:none"><i class="Hui-iconfont">&#xe631;</i></a>
 				</td>
 			</tr>
 		</tbody>
@@ -151,6 +151,8 @@ function reset_table_data() {
 					}
 					if (value.checkingstatus == 0) {
 						template.find('[tag="qualification-status"]').text('等待确认');
+						template.find('[tag="accept"]').show();
+						template.find('[tag="refuse"]').show();
 					}
 					if (value.checkingstatus > 0) {
 						template.find('[tag="qualification-status"]').text('已通过');
