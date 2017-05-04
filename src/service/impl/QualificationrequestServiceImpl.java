@@ -232,8 +232,8 @@ public class QualificationrequestServiceImpl implements
 					q.setRequestip(qualificationRequest.getRequestip());
 					q.setRequesttime(qualificationRequest.getRequesttime());
 					q.setCheckingstatus(qualificationRequest.getCheckingstatus());
-					q.setCheckingtype(qualificationRequest.getCheckingtype() == null ? Configurations.invalid_int : qualificationRequest.getCheckingtype());
-					q.setCheckingtime(qualificationRequest.getCheckingtime() == null ? Configurations.invalid_int : qualificationRequest.getCheckingtime());
+					q.setCheckingtype(qualificationRequest.getCheckingtype() == null ? Configurations.int_invalid : qualificationRequest.getCheckingtype());
+					q.setCheckingtime(qualificationRequest.getCheckingtime() == null ? Configurations.int_invalid : qualificationRequest.getCheckingtime());
 					q.setCheckingip(qualificationRequest.getCheckingip());
 					if (qualificationRequest.getAdmin() != null) {
 						TransferAdminInfo checkinguser = new TransferAdminInfo();

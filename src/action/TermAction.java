@@ -268,15 +268,15 @@ public class TermAction extends BaseAction implements ServletRequestAware,
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key))) {
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key))) {
 			throw new NoLoginException("管理员没有登录");
 		}
 	}
 	
 	private void checkPermission() throws PermissionDeniedException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Configurations.session_user_authorization_key) == null
-				|| Configurations.string_authorization_fail.equals(session.getAttribute(Configurations.session_user_authorization_key))) {
+		if (session.getAttribute(Configurations.session_authorization_key) == null
+				|| Configurations.interceptor_string_authorization_fail.equals(session.getAttribute(Configurations.session_authorization_key))) {
 			throw new PermissionDeniedException("没有该操作的授权");
 		}
 	}

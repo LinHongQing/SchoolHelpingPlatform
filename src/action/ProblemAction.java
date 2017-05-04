@@ -673,7 +673,7 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 								rs_problem = problemService.update();
 								if (rs_problem.getMsgType().equals(ResultCodeStorage.type_success)) {
 									// 以下操作执行信用值更新
-									int currentCreditValue = Configurations.invalid_int;
+									int currentCreditValue = Configurations.int_invalid;
 									/*----------problemCreateUser----------*/
 									userService.initParameters();
 									userService.setParameters(UserService.set_uid, problemCreateUserUid);
@@ -697,11 +697,11 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 										creditvaluelogService.setParameters(CreditvaluelogService.set_userUid, problemCreateUserUid);
 										creditvaluelogService.setParameters(CreditvaluelogService.set_createTime, TimeUtil.getNowTimeStamp());
 										creditvaluelogService.setParameters(CreditvaluelogService.set_changeValue,
-												String.valueOf(Configurations.action_defaultCreditValueChange_problemComplete_creator));
-										currentCreditValue += Configurations.action_defaultCreditValueChange_problemComplete_creator;
+												String.valueOf(Configurations.getCreditValueChangeForCreator()));
+										currentCreditValue += Configurations.getCreditValueChangeForCreator();
 										creditvaluelogService.setParameters(CreditvaluelogService.set_finalValue,
 												String.valueOf(currentCreditValue));
-										creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.string_problem_solve);
+										creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.action_string_problem_solved);
 										TransferResultInfo<?> rs_creditvaluelog = creditvaluelogService.insert();
 										if (!rs_creditvaluelog.getMsgType().equals(ResultCodeStorage.type_success)) {
 											sendMsgtoWeb(rs_creditvaluelog);
@@ -738,11 +738,11 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 										creditvaluelogService.setParameters(CreditvaluelogService.set_userUid, solveCreateUserUid);
 										creditvaluelogService.setParameters(CreditvaluelogService.set_createTime, TimeUtil.getNowTimeStamp());
 										creditvaluelogService.setParameters(CreditvaluelogService.set_changeValue,
-												String.valueOf(Configurations.action_defaultCreditValueChange_problemComplete_creator));
-										currentCreditValue += Configurations.action_defaultCreditValueChange_problemComplete_creator;
+												String.valueOf(Configurations.getCreditValueChangeForSolver()));
+										currentCreditValue += Configurations.getCreditValueChangeForSolver();
 										creditvaluelogService.setParameters(CreditvaluelogService.set_finalValue,
 												String.valueOf(currentCreditValue));
-										creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.string_solve_problem);
+										creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.action_string_solve_problem);
 										TransferResultInfo<?> rs_creditvaluelog = creditvaluelogService.insert();
 										if (!rs_creditvaluelog.getMsgType().equals(ResultCodeStorage.type_success)) {
 											sendMsgtoWeb(rs_creditvaluelog);
@@ -788,11 +788,11 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 												creditvaluelogService.setParameters(CreditvaluelogService.set_userUid, solveCreateUserUid);
 												creditvaluelogService.setParameters(CreditvaluelogService.set_createTime, TimeUtil.getNowTimeStamp());
 												creditvaluelogService.setParameters(CreditvaluelogService.set_changeValue,
-														String.valueOf(Configurations.action_defaultCreditValueChange_problemComplete_solver));
-												currentCreditValue += Configurations.action_defaultCreditValueChange_problemComplete_solver;
+														String.valueOf(Configurations.getCreditValueChangeForSolver()));
+												currentCreditValue += Configurations.getCreditValueChangeForSolver();
 												creditvaluelogService.setParameters(CreditvaluelogService.set_finalValue,
 														String.valueOf(currentCreditValue));
-												creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.string_solve_assistant);
+												creditvaluelogService.setParameters(CreditvaluelogService.set_reason, Configurations.action_string_problem_solve_assistant);
 												TransferResultInfo<?> rs_creditvaluelog = creditvaluelogService.insert();
 												if (!rs_creditvaluelog.getMsgType().equals(ResultCodeStorage.type_success)) {
 													sendMsgtoWeb(rs_creditvaluelog);
@@ -935,7 +935,7 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 						// 若协助者不为空
 						if (strAssistantUids != null && !"".equals(strAssistantUids)) {
 							// 将字符串集合分割成字符串数组
-							String[] assistantUids = strAssistantUids.split(Configurations.split_string);
+							String[] assistantUids = strAssistantUids.split(Configurations.string_split);
 							// 初始化要返回前端的协助者数组
 							List<TransferUserInfo> assistant = new ArrayList<TransferUserInfo>();
 							for (String assistantUid : assistantUids) {
@@ -1130,21 +1130,21 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 	private void checkUserLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_user_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
 			throw new NoLoginException("普通用户没有登录");
 	}
 	
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
 			throw new NoLoginException("管理员没有登录");
 	}
 	
 	private void checkPermission() throws PermissionDeniedException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Configurations.session_user_authorization_key) == null
-				|| Configurations.string_authorization_fail.equals(session.getAttribute(Configurations.session_user_authorization_key)))
+		if (session.getAttribute(Configurations.session_authorization_key) == null
+				|| Configurations.interceptor_string_authorization_fail.equals(session.getAttribute(Configurations.session_authorization_key)))
 			throw new PermissionDeniedException("没有该操作的授权");
 	}
 	

@@ -201,7 +201,7 @@ public class AdminloginlogServiceImpl implements AdminloginlogService {
 				break;
 			}
 			if (list_loginLog.size() == 0) {
-				fin.setAdminlastlogintime(Configurations.invalid_int);
+				fin.setAdminlastlogintime(Configurations.int_invalid);
 			}
 			fin.setAdminlogincount(list_loginLog.size() + 1);
 			TransferResultInfo<TransferOnlineUserBasicInfo> rs = new TransferResultInfo<TransferOnlineUserBasicInfo>();

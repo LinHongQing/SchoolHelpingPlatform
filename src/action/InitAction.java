@@ -175,7 +175,7 @@ public class InitAction extends BaseAction implements ServletRequestAware, Servl
 				TransferResultInfo<String> rs = new TransferResultInfo<String>();
 				rs.setMsgType(ResultCodeStorage.type_success);
 				rs.setMsgCode(ResultCodeStorage.code_success);
-				rs.setMsgContent(Configurations.string_chat_system_path);
+				rs.setMsgContent(Configurations.getChatSystemPath());
 				sendMsgtoWeb(rs);
 				return;
 			}

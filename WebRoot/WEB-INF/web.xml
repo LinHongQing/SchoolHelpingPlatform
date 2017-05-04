@@ -12,6 +12,14 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 	</session-config>
+	<context-param>
+    	<param-name>shp.root</param-name>
+		<param-value>webAppRootKey</param-value>
+	</context-param>
+	<context-param>
+		<param-name>shp.conf</param-name>
+		<param-value>webAppConfKey</param-value>
+	</context-param>
 	<filter>
 		<filter-name>struts2</filter-name>
 		<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
@@ -24,6 +32,9 @@
 		<filter-name>struts2</filter-name>
 		<url-pattern>*.action</url-pattern>
 	</filter-mapping>
+	<listener>
+		<listener-class>listener.InitListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>listener.SessionListener</listener-class>
 	</listener>

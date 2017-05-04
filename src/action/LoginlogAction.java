@@ -239,14 +239,14 @@ public class LoginlogAction extends BaseAction implements ServletRequestAware,
 	private void checkUserLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_user_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
 			throw new NoLoginException("普通用户没有登录");
 	}
 	
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
 			throw new NoLoginException("管理员用户没有登录");
 	}
 }

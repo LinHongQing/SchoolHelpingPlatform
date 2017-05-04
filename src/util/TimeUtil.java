@@ -61,7 +61,7 @@ public final class TimeUtil {
 		case get_second:
 			return cal.get(Calendar.SECOND);
 		default:
-			return Configurations.invalid_int;
+			return Configurations.int_invalid;
 		}
 	}
 

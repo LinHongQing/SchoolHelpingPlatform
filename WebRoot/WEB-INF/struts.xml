@@ -73,9 +73,11 @@
 		</action>
 		<action name="loginlog-*" class="action.LoginlogAction" method="{1}">
 			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
 		</action>
 		<action name="creditvaluelog-*" class="action.CreditvaluelogAction" method="{1}">
 			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
 		</action>
 		<action name="problem-*" class="action.ProblemAction" method="{1}">
 			<param name="ui">admin</param>
@@ -83,6 +85,9 @@
 		</action>
 		<action name="complaint-*" class="action.ComplaintAction" method="{1}">
 			<param name="ui">admin</param>
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
+		<action name="sysconf-*" class="action.SystemConfigurationAction" method="{1}">
 			<interceptor-ref name="for-admins"></interceptor-ref>
 		</action>
 	</package>

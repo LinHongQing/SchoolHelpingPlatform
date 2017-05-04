@@ -70,7 +70,7 @@ public class RoleDaoImpl extends HibernateDaoSupport implements RoleDao {
 				break;
 			case roleValue:
 			case createTime:
-				String[] splitStrings = value.split(Configurations.split_string);
+				String[] splitStrings = value.split(Configurations.string_split);
 				if (splitStrings.length > 1) {
 					for (int i = 0; i < splitStrings.length; i++)
 						query.setString(currentSet + i, splitStrings[i]);

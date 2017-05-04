@@ -33,35 +33,35 @@ public class LoginInterceptor extends AbstractInterceptor {
 		HttpServletRequest request = ServletActionContext.getRequest();
 		HttpSession session = request.getSession();						// 获取请求的 session
 		if (session.getAttribute(Configurations.session_online_user_key) == null) {
-			session.setAttribute(Configurations.session_user_login_key, Configurations.string_nologin);
-			session.setAttribute(Configurations.session_admin_login_key, Configurations.string_nologin);
+			session.setAttribute(Configurations.session_user_login_key, Configurations.interceptor_string_nologin);
+			session.setAttribute(Configurations.session_admin_login_key, Configurations.interceptor_string_nologin);
 			System.out.println("无登录信息, 未登录");
 		} else {
 			TransferOnlineUserBasicInfo user = null;
 			try {
 				user = (TransferOnlineUserBasicInfo) session.getAttribute(Configurations.session_online_user_key);
 			} catch (ClassCastException e) {
-				session.setAttribute(Configurations.session_user_login_key, Configurations.string_nologin);
+				session.setAttribute(Configurations.session_user_login_key, Configurations.interceptor_string_nologin);
 				System.out.println("无登录信息, 未登录");
 				return ai.invoke();
 			}
 			user = (TransferOnlineUserBasicInfo) session.getAttribute(Configurations.session_online_user_key);
 			switch(role) {
-			case Configurations.login_request_type_user:
+			case Configurations.interceptor_string_login_request_type_user:
 				if (user.getUser() == null) {
-					session.setAttribute(Configurations.session_user_login_key, Configurations.string_nologin);
+					session.setAttribute(Configurations.session_user_login_key, Configurations.interceptor_string_nologin);
 					System.out.println("用户未登录");
 				} else {
-					session.setAttribute(Configurations.session_user_login_key, Configurations.string_login);
+					session.setAttribute(Configurations.session_user_login_key, Configurations.interceptor_string_login);
 					System.out.println("用户已登录");
 				}
 				return ai.invoke();
-			case Configurations.login_request_type_admin:
+			case Configurations.interceptor_string_login_request_type_admin:
 				if (user.getAdmin() == null) {
-					session.setAttribute(Configurations.session_admin_login_key, Configurations.string_nologin);
+					session.setAttribute(Configurations.session_admin_login_key, Configurations.interceptor_string_nologin);
 					System.out.println("管理员未登录");
 				} else {
-					session.setAttribute(Configurations.session_admin_login_key, Configurations.string_login);
+					session.setAttribute(Configurations.session_admin_login_key, Configurations.interceptor_string_login);
 					System.out.println("管理员已登录");
 				}
 			}

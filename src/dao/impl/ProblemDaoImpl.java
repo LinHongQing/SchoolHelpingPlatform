@@ -102,7 +102,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 			case preferStart:
 			case preferEnd:
 			case createTime:
-				String[] splitStrings = value.split(Configurations.split_string);
+				String[] splitStrings = value.split(Configurations.string_split);
 				if (splitStrings.length > 1) {
 					for (int i = 0; i < splitStrings.length; i++)
 						query.setString(currentSet + i, splitStrings[i]);
@@ -331,7 +331,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 		
 		sql += " find_in_set('" + s_currentDay + "', preferDay) and (";		// 日期的星期部分
 		// 问题类型部分
-		String[] problemTypeUids = s_problemTypeUid.split(Configurations.split_string);
+		String[] problemTypeUids = s_problemTypeUid.split(Configurations.string_split);
 		int i = 0, count = problemTypeUids.length;
 		for (String string : problemTypeUids) {
 			sql += "find_in_set('" + string + "', problemtypeid)";

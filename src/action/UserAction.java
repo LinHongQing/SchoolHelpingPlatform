@@ -336,8 +336,8 @@ public class UserAction extends BaseAction implements ServletRequestAware, Servl
 				userService.setParameters(UserService.set_pwd, pwd);
 				userService.setParameters(UserService.set_createIp, request.getRemoteAddr());
 				userService.setParameters(UserService.set_createTime, TimeUtil.getNowTimeStamp());
-				userService.setParameters(UserService.set_roleUid, Configurations.db_entry_default_user_role_uid);
-				userService.setParameters(UserService.set_creditValue, String.valueOf(Configurations.db_entry_default_user_credit_value));
+				userService.setParameters(UserService.set_roleUid, Configurations.getDefaultUserRoleUid());
+				userService.setParameters(UserService.set_creditValue, String.valueOf(Configurations.getDefaultUserCreditValue()));
 				TransferResultInfo<?> rs = userService.insert();
 				sendMsgtoWeb(rs);
 			}
@@ -591,21 +591,21 @@ public class UserAction extends BaseAction implements ServletRequestAware, Servl
 	private void checkUserLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_user_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_user_login_key)))
 			throw new NoLoginException("普通用户没有登录");
 	}
 	
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
 			throw new NoLoginException("管理员用户没有登录");
 	}
 	
 	private void checkPermission() throws PermissionDeniedException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Configurations.session_user_authorization_key) == null
-				|| Configurations.string_authorization_fail.equals(session.getAttribute(Configurations.session_user_authorization_key)))
+		if (session.getAttribute(Configurations.session_authorization_key) == null
+				|| Configurations.interceptor_string_authorization_fail.equals(session.getAttribute(Configurations.session_authorization_key)))
 			throw new PermissionDeniedException("没有该操作的授权");
 	}
 

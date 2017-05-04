@@ -97,7 +97,7 @@ public class ComplaintrequestDaoImpl extends HibernateDaoSupport implements Comp
 				break;
 			case createTime:
 			case replyCreateTime:
-				String[] splitStrings = value.split(Configurations.split_string);
+				String[] splitStrings = value.split(Configurations.string_split);
 				if (splitStrings.length > 1) {
 					for (int i = 0; i < splitStrings.length; i++)
 						query.setString(currentSet + i, splitStrings[i]);

@@ -17,31 +17,31 @@ public final class PrivilegeCodeRequestPathStorage {
 	public static final int is_authorized = 1;
 	public static final int not_authorized = 0;
 	
-	public static final int invalid_request_path_code = Configurations.invalid_int;
+	public static final int invalid_request_path_code = Configurations.int_invalid;
 	
-	public static final int _user_permit_problem_new = 0;
-	public static final int _user_permit_problem_operation = 1;
-	public static final int _user_permit_problem_delete = 2;
-	public static final int _user_permit_problem_get = 3;
-	public static final int _user_permit_user_update = 4;
-	public static final int _user_permit_user_qualification = 5;
-	public static final int _user_permit_user_complaint = 6;
+	private static final int _user_permit_problem_new = 0;
+	private static final int _user_permit_problem_operation = 1;
+	private static final int _user_permit_user_update = 2;
+	private static final int _user_permit_user_qualification = 3;
+	private static final int _user_permit_user_complaint = 4;
 	
-	public static final int _admin_permit_academy_operation = 0;
-	public static final int _admin_permit_course_operation = 1;
-	public static final int _admin_permit_grade_operation = 2;
-	public static final int _admin_permit_term_operation = 3;
-	public static final int _admin_permit_location_operation = 4;
-	public static final int _admin_permit_user_operation = 4;
-	public static final int _admin_permit_role_operation = 5;
-	public static final int _admin_permit_admin_operation = 6;
-	public static final int _admin_permit_privilege_operation = 7;
-	public static final int _admin_permit_qualificationtype_operation = 8;
-	public static final int _admin_permit_problemtype_operation = 9;
-	public static final int _admin_permit_complaint_get = 10;
-	public static final int _admin_permit_complaint_operation = 11;
-	public static final int _admin_permit_qualificationrequest_get = 12;
-	public static final int _admin_permit_qualificationrequest_verify = 13;
+	private static final int _admin_permit_academy_operation = 0;
+	private static final int _admin_permit_course_operation = 1;
+	private static final int _admin_permit_grade_operation = 2;
+	private static final int _admin_permit_term_operation = 3;
+	private static final int _admin_permit_location_operation = 4;
+	private static final int _admin_permit_user_operation = 4;
+	private static final int _admin_permit_role_operation = 5;
+	private static final int _admin_permit_admin_operation = 6;
+	private static final int _admin_permit_privilege_operation = 7;
+	private static final int _admin_permit_qualificationtype_operation = 8;
+	private static final int _admin_permit_problemtype_operation = 9;
+	private static final int _admin_permit_complaint_get = 10;
+	private static final int _admin_permit_complaint_operation = 11;
+	private static final int _admin_permit_qualificationrequest_get = 12;
+	private static final int _admin_permit_qualificationrequest_verify = 13;
+	private static final int _admin_permit_system_config_get = 14;
+	private static final int _admin_permit_system_config_set = 15;
 	
 	private static final Map<Integer, String> users;
 	private static final Map<Integer, String> admins;
@@ -76,6 +76,8 @@ public final class PrivilegeCodeRequestPathStorage {
 		admins.put(_admin_permit_complaint_operation, StringUtil.stringsCombine("complaint-process", "complaint-finish"));
 		admins.put(_admin_permit_qualificationrequest_get, StringUtil.stringsCombine("qualreq-get"));
 		admins.put(_admin_permit_qualificationrequest_verify, StringUtil.stringsCombine("qualreq-verify"));
+		admins.put(_admin_permit_system_config_get, StringUtil.stringsCombine("sysconf-get"));
+		admins.put(_admin_permit_system_config_set, StringUtil.stringsCombine("sysconf-set"));
 		
 		users_description.put(_user_permit_problem_new, "允许用户发布问题");
 		users_description.put(_user_permit_problem_operation, "允许用户进行问题操作");
@@ -98,7 +100,8 @@ public final class PrivilegeCodeRequestPathStorage {
 		admins_description.put(_admin_permit_complaint_operation, "允许处理投诉信息");
 		admins_description.put(_admin_permit_qualificationrequest_get, "允许查看认证请求信息");
 		admins_description.put(_admin_permit_qualificationrequest_verify, "允许处理认证请求信息");
-		
+		admins_description.put(_admin_permit_system_config_get, "允许读取系统设置");
+		admins_description.put(_admin_permit_system_config_set, "允许修改系统设置");
 	}
 	
 	public static String formatPrivilegeListToString(List<String> source) {
@@ -121,8 +124,8 @@ public final class PrivilegeCodeRequestPathStorage {
 	
 	public static int resolvePrivilegeCode(String privilegeCode, int privilegeName) {
 		try {
-			String[] split_result = privilegeCode.split(Configurations.split_string);
-			return Integer.parseInt(split_result[privilegeName]) == 1 ? is_authorized : not_authorized;
+			String[] split_result = privilegeCode.split(Configurations.string_split);
+			return Integer.parseInt(split_result[privilegeName]) == is_authorized ? is_authorized : not_authorized;
 		} catch (NumberFormatException e) {
 			// TODO: handle exception
 			return -1;
@@ -137,7 +140,7 @@ public final class PrivilegeCodeRequestPathStorage {
 		case admin:
 			for (int key : admins.keySet()) {
 				String value = admins.get(key);
-				String[] requests = value.split(Configurations.split_string);
+				String[] requests = value.split(Configurations.string_split);
 				for (String string : requests) {
 					if (path.contains(string))
 						return key;
@@ -147,7 +150,7 @@ public final class PrivilegeCodeRequestPathStorage {
 		case user:
 			for (int key : users.keySet()) {
 				String value = users.get(key);
-				String[] requests = value.split(Configurations.split_string);
+				String[] requests = value.split(Configurations.string_split);
 				for (String string : requests) {
 					if (path.contains(string))
 						return key;

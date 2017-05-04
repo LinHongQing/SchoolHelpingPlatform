@@ -198,7 +198,7 @@ public class ComplaintrequestServiceImpl implements ComplaintrequestService {
 					c.setReplydescription(complaintRequest.getReplydescription());
 					c.setReplyresourceuid(complaintRequest.getReplyresourceid());
 					c.setReplycreateip(complaintRequest.getReplycreateip());
-					c.setReplycreatetime(complaintRequest.getReplycreatetime() == null ? Configurations.invalid_int : complaintRequest.getReplycreatetime());
+					c.setReplycreatetime(complaintRequest.getReplycreatetime() == null ? Configurations.int_invalid : complaintRequest.getReplycreatetime());
 					if (complaintRequest.getAdmin() != null) {
 						TransferAdminInfo replycreateuser = new TransferAdminInfo();
 						replycreateuser.setUid(complaintRequest.getAdmin().getUid());

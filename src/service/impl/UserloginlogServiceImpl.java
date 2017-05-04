@@ -201,7 +201,7 @@ public class UserloginlogServiceImpl implements UserloginlogService {
 				break;
 			}
 			if (list_loginLog.size() == 0) {
-				fin.setUserlastlogintime(Configurations.invalid_int);
+				fin.setUserlastlogintime(Configurations.int_invalid);
 			}
 			fin.setUserlogincount(list_loginLog.size() + 1);
 			TransferResultInfo<TransferOnlineUserBasicInfo> rs = new TransferResultInfo<TransferOnlineUserBasicInfo>();

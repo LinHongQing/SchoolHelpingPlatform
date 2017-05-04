@@ -423,7 +423,7 @@ public class CheckAction extends BaseAction implements ServletResponseAware,
 	private void checkUserLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_user_login_key) == null
-				|| Configurations.string_nologin.equals(session
+				|| Configurations.interceptor_string_nologin.equals(session
 						.getAttribute(Configurations.session_user_login_key)))
 			throw new NoLoginException("普通用户没有登录");
 	}
@@ -431,7 +431,7 @@ public class CheckAction extends BaseAction implements ServletResponseAware,
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session
+				|| Configurations.interceptor_string_nologin.equals(session
 						.getAttribute(Configurations.session_admin_login_key)))
 			throw new NoLoginException("管理员用户没有登录");
 	}

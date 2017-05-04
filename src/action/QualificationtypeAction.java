@@ -204,7 +204,7 @@ public class QualificationtypeAction extends BaseAction implements
 						// 获取资质类型信息里面包含的问题类型字符串
 						String strApplicableProblemTypeUids = transferQualificationtypeInfo.getStrapplicableproblemtypeUids();
 						// 将对应的多个问题类型分割出来
-						String[] applicableProblemTypeUids = strApplicableProblemTypeUids.split(Configurations.split_string);
+						String[] applicableProblemTypeUids = strApplicableProblemTypeUids.split(Configurations.string_split);
 						// 初始化最终的集合
 						List<TransferProblemtypeInfo> finalApplicableProblemType = new ArrayList<TransferProblemtypeInfo>();
 						// 开始获取所有问题类型的具体信息 (通用 id, 名称)
@@ -307,14 +307,14 @@ public class QualificationtypeAction extends BaseAction implements
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key)))
 			throw new NoLoginException("管理员没有登录");
 	}
 	
 	private void checkPermission() throws PermissionDeniedException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Configurations.session_user_authorization_key) == null
-				|| Configurations.string_authorization_fail.equals(session.getAttribute(Configurations.session_user_authorization_key)))
+		if (session.getAttribute(Configurations.session_authorization_key) == null
+				|| Configurations.interceptor_string_authorization_fail.equals(session.getAttribute(Configurations.session_authorization_key)))
 			throw new PermissionDeniedException("没有该操作的授权");
 	}
 	

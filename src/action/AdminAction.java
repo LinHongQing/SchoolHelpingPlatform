@@ -18,6 +18,7 @@ import cache.ResultCodeStorage;
 
 import com.google.gson.Gson;
 
+import exception.IllegalOperationException;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
 import exception.PermissionDeniedException;
@@ -252,6 +253,8 @@ public class AdminAction extends BaseAction implements ServletRequestAware,
 				checkPermission();
 				if (uid == null || "".equals(uid))
 					throw new IllegalParameterException("uid 参数不能为空");
+				if (Configurations.db_admin_default_admin_uid.equals(uid))
+					throw new IllegalOperationException("默认管理员无法删除");
 				TransferResultInfo<?> rs = adminService.delete();
 				sendMsgtoWeb(rs);
 			}
@@ -360,6 +363,14 @@ public class AdminAction extends BaseAction implements ServletRequestAware,
 			rs.setMsgCode(ResultCodeStorage.code_err_invalid_parameter);
 			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_invalid_parameter, e.getMessage()));
 			sendMsgtoWeb(rs);
+		} catch (IllegalOperationException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			TransferResultInfo<String> rs = new TransferResultInfo<String>();
+			rs.setMsgType(ResultCodeStorage.type_error);
+			rs.setMsgCode(ResultCodeStorage.code_err_illegal_operation);
+			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_illegal_operation, e.getMessage()));
+			sendMsgtoWeb(rs);
 		} catch (NoLoginException e) {
 			e.printStackTrace();
 			TransferResultInfo<String> rs = new TransferResultInfo<String>();
@@ -410,15 +421,15 @@ public class AdminAction extends BaseAction implements ServletRequestAware,
 	private void checkAdminLogin() throws NoLoginException {
 		HttpSession session = request.getSession();
 		if (session.getAttribute(Configurations.session_admin_login_key) == null
-				|| Configurations.string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key))) {
+				|| Configurations.interceptor_string_nologin.equals(session.getAttribute(Configurations.session_admin_login_key))) {
 			throw new NoLoginException("管理员没有登录");
 		}
 	}
 	
 	private void checkPermission() throws PermissionDeniedException {
 		HttpSession session = request.getSession();
-		if (session.getAttribute(Configurations.session_user_authorization_key) == null
-				|| Configurations.string_authorization_fail.equals(session.getAttribute(Configurations.session_user_authorization_key))) {
+		if (session.getAttribute(Configurations.session_authorization_key) == null
+				|| Configurations.interceptor_string_authorization_fail.equals(session.getAttribute(Configurations.session_authorization_key))) {
 			throw new PermissionDeniedException("没有该操作的授权");
 		}
 	}
