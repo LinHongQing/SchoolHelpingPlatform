@@ -35,7 +35,7 @@ public class QualificationrequestDaoImpl extends HibernateDaoSupport implements 
 				preHql += " AND q.qualificationtype.uid = ?";
 				break;
 			case description:
-				preHql += " AND q.description = ?";
+				preHql += " AND q.description LIKE ?";
 				break;
 			case resourceUid:
 				preHql += " AND q.resourceid = ?";
@@ -78,10 +78,13 @@ public class QualificationrequestDaoImpl extends HibernateDaoSupport implements 
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
+			case description:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
 			case uid:
 			case userUid:
 			case typeUid:
-			case description:
 			case resourceUid:
 			case requestIp:
 			case checkingStatus:

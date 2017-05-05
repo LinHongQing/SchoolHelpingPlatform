@@ -27,7 +27,7 @@ public class LocationDaoImpl extends HibernateDaoSupport implements LocationDao 
 				preHql += " AND l.uid = ?";
 				break;
 			case name:
-				preHql += " AND l.name = ?";
+				preHql += " AND l.name LIKE ?";
 				break;
 			case longitude:
 				preHql += " AND l.longitude >= ? AND l.longitude <= ?";
@@ -60,8 +60,11 @@ public class LocationDaoImpl extends HibernateDaoSupport implements LocationDao 
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case createIp:
 			case createUserUid:
 				query.setString(currentSet, value);

@@ -39,7 +39,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 				preHql += " AND p.problemtype.uid = ?";
 				break;
 			case title:
-				preHql += " AND p.title = ?";
+				preHql += " AND p.title LIKE ?";
 				break;
 			case preferDay:
 				preHql += " AND p.preferday = ?";
@@ -51,7 +51,7 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 				preHql += " AND p.preferend >= ? AND p.preferend <= ?";
 				break;
 			case description:
-				preHql += " AND p.description = ?";
+				preHql += " AND p.description LIKE ?";
 				break;
 			case resourceUid:
 				preHql += " AND p.resourceid = ?";
@@ -85,13 +85,16 @@ public class ProblemDaoImpl extends HibernateDaoSupport implements ProblemDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
+			case title:
+			case description:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
 			case uid:
 			case createUserUid:
 			case locationUid:
 			case problemTypeUid:
-			case title:
 			case preferDay:
-			case description:
 			case resourceUid:
 			case createIp:
 			case status:

@@ -27,7 +27,7 @@ public class PrivilegeDaoImpl extends HibernateDaoSupport implements PrivilegeDa
 				preHql += " AND p.uid = ?";
 				break;
 			case name:
-				preHql += " AND p.name = ?";
+				preHql += " AND p.name LIKE ?";
 				break;
 			case privilegeValue:
 				preHql += " AND p.privilegevalue >= ? AND p.privilegevalue <= ?";
@@ -60,8 +60,11 @@ public class PrivilegeDaoImpl extends HibernateDaoSupport implements PrivilegeDa
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case privilegeCode:
 			case createIp:
 			case createUserUid:

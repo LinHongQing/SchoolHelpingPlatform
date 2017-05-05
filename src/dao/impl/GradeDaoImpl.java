@@ -27,7 +27,7 @@ public class GradeDaoImpl extends HibernateDaoSupport implements GradeDao {
 				preHql += " AND g.uid = ?";
 				break;
 			case name:
-				preHql += " AND g.name = ?";
+				preHql += " AND g.name LIKE ?";
 				break;
 			case admissionTime:
 				preHql += " AND g.admissiontime >= ? AND g.admissiontime <= ?";
@@ -60,8 +60,11 @@ public class GradeDaoImpl extends HibernateDaoSupport implements GradeDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case createIp:
 			case createUserUid:
 				query.setString(currentSet, value);

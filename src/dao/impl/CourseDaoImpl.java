@@ -28,7 +28,7 @@ public class CourseDaoImpl extends HibernateDaoSupport implements CourseDao {
 				preHql += " AND c.uid = ?";
 				break;
 			case name:
-				preHql += " AND c.name = ?";
+				preHql += " AND c.name LIKE ?";
 				break;
 			case academyUid:
 				preHql += " AND c.academy.uid = ?";
@@ -58,8 +58,11 @@ public class CourseDaoImpl extends HibernateDaoSupport implements CourseDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case academyUid:
 			case createIp:
 			case createUserUid:

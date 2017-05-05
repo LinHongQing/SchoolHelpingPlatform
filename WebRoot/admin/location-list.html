@@ -27,8 +27,10 @@
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 信息管理 <span class="c-gray en">&gt;</span> 位置列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:;" onclick="reset_table_data()" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
 	<div class="text-c">
-		<input type="text" class="input-text" style="width:500px" placeholder="输入位置名称" id="" name="">
-		<button type="submit" class="btn btn-success" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜位置</button>
+		<form id="search">
+			<input type="text" class="input-text" style="width:500px" placeholder="输入位置名称" id="location-name" name="name">
+			<button type="submit" class="btn btn-success"><i class="Hui-iconfont">&#xe665;</i> 搜位置</button>
+		</form>
 	</div>
 	<div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
@@ -93,6 +95,11 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
+	$("#search").submit(function() {
+		form = $(this);
+		reset_table_data(form.serialize());
+		return false;
+	});
 	reset_table_data();
 });
 
@@ -148,12 +155,13 @@ function location_del(obj, id) {
 	});
 }
 
-function reset_table_data() {
+function reset_table_data(param) {
 	var hint;
  	$.ajax({
 		type: "POST",
 		url: "location-get.action",
 		dataType: "json",
+		data: param,
 		beforeSend: function() {
 			hint = layer.msg("初始化中, 请稍后", {
 				icon: 16,

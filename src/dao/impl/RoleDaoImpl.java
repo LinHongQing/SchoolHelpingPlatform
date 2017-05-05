@@ -27,7 +27,7 @@ public class RoleDaoImpl extends HibernateDaoSupport implements RoleDao {
 				preHql += " AND r.uid = ?";
 				break;
 			case name:
-				preHql += " AND r.name = ?";
+				preHql += " AND r.name LIKE ?";
 				break;
 			case roleValue:
 				preHql += " AND r.rolevalue >= ? AND r.rolevalue <= ?";
@@ -60,8 +60,11 @@ public class RoleDaoImpl extends HibernateDaoSupport implements RoleDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case roleCode:
 			case createIp:
 			case createUserUid:

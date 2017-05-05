@@ -26,7 +26,7 @@ public class AcademyDaoImpl extends HibernateDaoSupport implements AcademyDao {
 				preHql += " AND a.uid = ?";
 				break;
 			case name:
-				preHql += " AND a.name = ?";
+				preHql += " AND a.name LIKE ?";
 				break;
 			case createIp:
 				preHql += " AND a.createip = ?";
@@ -53,8 +53,11 @@ public class AcademyDaoImpl extends HibernateDaoSupport implements AcademyDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case createIp:
 			case createUserUid:
 				query.setString(currentSet, value);

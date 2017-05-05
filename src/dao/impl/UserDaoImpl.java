@@ -32,13 +32,13 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 				preHql += " AND u.uid = ?";
 				break;
 			case name:
-				preHql += " AND u.name = ?";
+				preHql += " AND u.name LIKE ?";
 				break;
 			case num:
-				preHql += " AND u.num = ?";
+				preHql += " AND u.num LIKE ?";
 				break;
 			case nickname:
-				preHql += " AND u.nickname = ?";
+				preHql += " AND u.nickname LIKE ?";
 				break;
 			case pwd:
 				preHql += " AND u.pwd = ?";
@@ -89,11 +89,14 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
 			case num:
-			case pwd:
 			case nickname:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
+			case pwd:
 			case resourceUid:
 			case academyUid:
 			case gradeUid:

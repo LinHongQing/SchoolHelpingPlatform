@@ -27,7 +27,7 @@ public class QualificationtypeDaoImpl extends HibernateDaoSupport implements Qua
 				preHql += " AND q.uid = ?";
 				break;
 			case name:
-				preHql += " AND q.name = ?";
+				preHql += " AND q.name LIKE ?";
 				break;
 			case problemTypeUid:
 				preHql += " AND q.problemtypeid = ?";
@@ -57,8 +57,11 @@ public class QualificationtypeDaoImpl extends HibernateDaoSupport implements Qua
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case problemTypeUid:
 			case createIp:
 			case createUserUid:

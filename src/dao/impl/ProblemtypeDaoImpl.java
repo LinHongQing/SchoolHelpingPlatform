@@ -27,7 +27,7 @@ public class ProblemtypeDaoImpl extends HibernateDaoSupport implements Problemty
 				preHql += " AND p.uid = ?";
 				break;
 			case name:
-				preHql += " AND p.name = ?";
+				preHql += " AND p.name LIKE ?";
 				break;
 			case createIp:
 				preHql += " AND p.createip = ?";
@@ -54,8 +54,11 @@ public class ProblemtypeDaoImpl extends HibernateDaoSupport implements Problemty
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case createIp:
 			case createUserUid:
 				query.setString(currentSet, value);

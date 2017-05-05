@@ -27,7 +27,7 @@ public class TermDaoImpl extends HibernateDaoSupport implements TermDao {
 				preHql += " AND t.uid = ?";
 				break;
 			case name:
-				preHql += " AND t.name = ?";
+				preHql += " AND t.name LIKE ?";
 				break;
 			case startTime:
 				preHql += " AND t.starttime >= ? AND t.starttime <= ?";
@@ -60,8 +60,11 @@ public class TermDaoImpl extends HibernateDaoSupport implements TermDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case createIp:
 			case createUserUid:
 				query.setString(currentSet, value);

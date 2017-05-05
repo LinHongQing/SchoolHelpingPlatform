@@ -26,10 +26,10 @@ public class AdminDaoImpl extends HibernateDaoSupport implements AdminDao {
 				preHql += " AND a.uid = ?";
 				break;
 			case email:
-				preHql += " AND a.email = ?";
+				preHql += " AND a.email LIKE ?";
 				break;
 			case name:
-				preHql += " AND a.name = ?";
+				preHql += " AND a.name LIKE ?";
 				break;
 			case pwd:
 				preHql += " AND a.pwd = ?";
@@ -59,9 +59,12 @@ public class AdminDaoImpl extends HibernateDaoSupport implements AdminDao {
 		for (Integer key : transferDbData.getValues().keySet()) {
 			String value = transferDbData.getValues().get(key);
 			switch(key) {
-			case uid:
 			case email:
 			case name:
+				query.setString(currentSet, "%" + value + "%");
+				currentSet++;
+				break;
+			case uid:
 			case pwd:
 			case privilegeUid:
 			case createIp:
