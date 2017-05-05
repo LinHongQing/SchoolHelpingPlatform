@@ -626,6 +626,8 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 				String problemCreateUserUid = "";
 				// 初始化记录该问题解决者通用 id 变量
 				String solveCreateUserUid = "";
+				// 初始化记录该问题协助解决者通用 id 变量
+				String solveAssistantUserUid = "";
 				// 若成功搜索到
 				if (rs_problem.getMsgType().equals(ResultCodeStorage.type_success)) {
 					@SuppressWarnings("unchecked")
@@ -780,12 +782,13 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 											else {
 												for (TransferUserInfo transferUserInfo : list_assistantUser) {
 													currentCreditValue = transferUserInfo.getCreditvalue();
+													solveAssistantUserUid = transferUserInfo.getUid();
 													break;
 												}
 												creditvaluelogService.initParameters();
 												creditvaluelogService.setParameters(CreditvaluelogService.set_uid,
 														DbUidGeneratorUtil.generateCreditvaluelogUid(PlatformStatistics.getTodayCreditValueChangeCount()));
-												creditvaluelogService.setParameters(CreditvaluelogService.set_userUid, solveCreateUserUid);
+												creditvaluelogService.setParameters(CreditvaluelogService.set_userUid, solveAssistantUserUid);
 												creditvaluelogService.setParameters(CreditvaluelogService.set_createTime, TimeUtil.getNowTimeStamp());
 												creditvaluelogService.setParameters(CreditvaluelogService.set_changeValue,
 														String.valueOf(Configurations.getCreditValueChangeForSolver()));
@@ -888,8 +891,8 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 				case Configurations.action_general_UI_USER:
 				default:
 					checkUserLogin();
+					checkPermission();
 				}
-				checkPermission();
 				if (type == null || "".equals(type))
 					type = Configurations.action_problem_type_get_summary;
 				switch(type) {
@@ -1025,13 +1028,20 @@ public class ProblemAction extends BaseAction implements ServletRequestAware, Se
 							// 获取当前用户的地理位置信息, 将用于计算推荐值以供排序
 							float myLongitude = user.getUser().getLocation().getLongitude();
 							float myLatitude = user.getUser().getLocation().getLatitude();
-							// 计算所有符合条件的所有条目的推荐值
-							for (TransferProblemInfo transferProblemInfo : list_problem) {
+							// 从列表中移除自己发布的问题, 并计算所有符合条件的所有条目的推荐值
+							int i = 0;
+							while (i < list_problem.size()) {
+								TransferProblemInfo transferProblemInfo = list_problem.get(i);
+								if (user.getUser().getUid().equals(transferProblemInfo.getCreateuser().getUid())) {
+									list_problem.remove(transferProblemInfo);
+									continue;
+								}
 								int preferStart = transferProblemInfo.getPreferstart();
 								int preferEnd = transferProblemInfo.getPreferend();
 								float longitude = transferProblemInfo.getLocation().getLongitude();
 								float latitude = transferProblemInfo.getLocation().getLatitude();
 								transferProblemInfo.setRecommandvalue(RecommandValueUtil.getValue(latitude, longitude, myLatitude, myLongitude, preferStart, preferEnd));
+								i++;
 							}
 							// 按推荐值进行排序操作
 							Collections.sort(list_problem, new ProblemSort());

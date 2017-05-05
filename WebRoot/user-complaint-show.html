@@ -28,7 +28,7 @@
 			<table class="table table-border table-bordered table-hover">
 				<thead>
 					<tr>
-						<th scope="col" colspan="7">投诉列表<a class="btn btn-success radius r" href="javascript:;" onclick="init_qualificationlog();" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
+						<th scope="col" colspan="7">投诉列表<a class="btn btn-success radius r" href="javascript:;" onclick="init_complaintlog();" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></th>
 					</tr>
 					<tr class="text-c">
 						<th width="10">ID</th>
@@ -154,7 +154,7 @@ function user_show(uid) {
 }
 /*用户-查看*/
 function complaint_show(uid) {
-	layer_show("查看用户详情", "user-complaint-detail.html?uid=" + uid, "", "");
+	layer_show("查看投诉详情", "user-complaint-detail.html?uid=" + uid, "", "");
 }
 </script>
 </body>

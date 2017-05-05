@@ -600,6 +600,7 @@ function init_solve_history(uid) {
 					var template = $(".solve-history-entry:last").clone();
 					template.appendTo(".solve-history-content");
 					template.find('[tag="id"]').html(index);
+					template.find('[tag="title"]').attr("onClick", "problem_show('" + value.problem.uid + "')");
 					template.find('[tag="title"]').html(value.problem.title);
 					if (value.assistant == null || value.assistant.length == 0) {
 						template.find(".assistant-users-content").empty();
@@ -645,6 +646,9 @@ function user_show(uid) {
 	if (uid == null || uid == "")
 		uid = sessionStorage.getItem("userUid");
 	layer_show("用户详情", "user-show-update.html?op=show&uid=" + uid, "600", "460");
+}
+function problem_show(uid) {
+	layer_show("查看问题", "user-problem-detail.html?uid=" + uid, "", "");
 }
 </script> 
 <!--/请在上方写此页面业务相关的脚本-->

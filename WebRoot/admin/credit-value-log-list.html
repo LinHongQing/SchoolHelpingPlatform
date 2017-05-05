@@ -109,7 +109,7 @@ function reset_table_data() {
 					var template = $("#credit-value-log-content").clone();
 					template.appendTo("#table-content");
 					template.find('[tag="id"]').html(index);
-					template.find('[tag="change-user"]').attr("onclick", "admin_show('" + value.user.uid + "')");
+					template.find('[tag="change-user"]').attr("onclick", "user_show('" + value.user.uid + "')");
 					template.find('[tag="change-user"]').text(value.user.name);
 					template.find('[tag="change-value"]').html(value.changevalue > 0 ? "+" + value.changevalue : value.changevalue);
 					template.find('[tag="final-value"]').html(value.finalvalue);

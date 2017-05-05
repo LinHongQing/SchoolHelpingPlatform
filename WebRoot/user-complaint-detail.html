@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="assets/lib/html5shiv.js"></script>
+<script type="text/javascript" src="assets/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="assets/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="assets/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="assets/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>投诉详情</title>
+</head>
+<body>
+<article class="page-container form form-horizontal" style="padding:20px">
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">投诉的问题帖子标题：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-title">标题</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">投诉人：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-creator">用户</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">投诉时间：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-time">时间</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">投诉 IP 地址：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-ip-address">IP</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">投诉描述详情：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-description">详情</span>
+		</div>
+	</div>
+	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">状态：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-status"></span>
+		</div>
+	</div>
+	<div class="row cl complaint-reply-description">
+		<label class="form-label col-xs-4 col-sm-3">管理员回复详情：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-reply-description">不可用</span>
+		</div>
+	</div>
+	<div class="row cl complaint-reply-user">
+		<label class="form-label col-xs-4 col-sm-3">管理员回复人：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-reply-user">不可用</span>
+		</div>
+	</div>
+	<div class="row cl complaint-reply-time">
+		<label class="form-label col-xs-4 col-sm-3">管理员回复时间：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-reply-time">不可用</span>
+		</div>
+	</div>
+	<div class="row cl complaint-reply-ip-address">
+		<label class="form-label col-xs-4 col-sm-3">管理员回复 IP 地址：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<span id="span-complaint-reply-ip-address">不可用</span>
+		</div>
+	</div>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="assets/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="assets/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="assets/static/h-ui/js/H-ui.min.js"></script> 
+<script type="text/javascript" src="assets/static/js/custom.js"></script>
+<!--/_footer 作为公共模版分离出去-->
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	var hint;
+	
+	var uid = $.getUrlParam("uid");
+	
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常, 无法初始化",{icon:2,time:1000});
+		return;
+	}
+	
+	init_complaint(uid);
+	
+});
+
+function init_complaint(uid) {
+	if (uid == null && uid == "") {
+		layer.msg("uid 参数异常",{icon:2,time:1000});
+		return;
+	}
+	var hint;
+	$.ajax({
+		url: "complaint-get.action",
+		type: "post",
+		dataType: "json",
+		data: {
+			uid: uid,
+			type: "detail"
+		},
+		async: false,
+		beforeSend: function() {
+			hint = layer.msg("初始化中, 请稍后", {
+				icon : 16,
+				shade : 0.4,
+				time : 0
+			});
+		},
+		complete: function() {
+			layer.close(hint);
+		},
+		success: function(result) {
+		if (result.msgType == "success") {
+			// do things here
+			var content = result.msgContent;
+			$.each(content, function(index, value) {
+				$("#uid").val(value.uid);
+				$("#span-title").html(value.problem.title);
+				$("#span-complaint-creator").html(value.user.name);
+				if (value.createtime < 0) {
+					$("#span-complaint-time").html("不可用");
+				} else {
+					$("#span-complaint-time").html(unixTimestamptoDateString(value.createtime));
+				}
+				if (value.createip == null || value.createip == "-1") {
+					$("#span-complaint-ip-address").html("不可用");
+				} else {
+					$("#span-complaint-ip-address").html(value.createip);
+				}
+				$("#span-complaint-description").html(value.description);
+				if (value.status == 0) {
+					$("#span-complaint-status").html("等待");
+				}
+				if (value.status == 1) {
+					$("#span-complaint-status").html("处理中");
+				}
+				if (value.status == 2) {
+					$("#span-complaint-status").html("处理完成");
+				}
+				$("#span-complaint-reply-description").html(value.replydescription);
+				if (value.replycreateuser != null)
+					$("#span-complaint-reply-user").html(value.replycreateuser.name);
+				if (value.replycreatetime < 0) {
+					$("#span-complaint-reply-time").html("不可用");
+				} else {
+					$("#span-complaint-reply-time").html(unixTimestamptoDateString(value.replycreatetime));
+				}
+				if (value.replycreateip == null || value.replycreateip == "-1") {
+					$("#span-complaint-reply-ip-address").html("不可用");
+				} else {
+					$("#span-complaint-reply-ip-address").html(value.replycreateip);
+				}
+			});
+		} else {
+			// do things here
+			layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
+				icon : 2,
+				shade: 0.4
+			});
+		}
+	},
+	error: function() {
+		layer.msg("connection error", {
+			icon : 2,
+			shade: 0.4
+		});
+	}
+	});
+}
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

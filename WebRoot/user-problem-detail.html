@@ -223,7 +223,8 @@ function init_problem(uid) {
 				$("#uid").val(value.uid);
 				$("#span-title").html(value.title);
 				$("#span-problem-type").html(value.problemtype.name);
-				$("#to-user-uid").val(value.createuser.uid);
+				var problem_creator_uid = value.createuser.uid;
+				$("#to-user-uid").val(problem_creator_uid);
 				$("#span-problem-creator").html(value.createuser.name);
 				$("#span-problem-location").html(value.location.name);
 				if (value.createtime <= 0) {
@@ -246,7 +247,11 @@ function init_problem(uid) {
 					$("#problem-status").text('锁定');
 				}
 				if (value.status == 0) {
-					$(".btn-accept").show();
+					if (sessionStorage.getItem("userUid") == problem_creator_uid) {
+						$(".btn-accept").hide();
+					} else {
+						$(".btn-accept").show();
+					}
 					$(".btn-reject").hide();
 					$(".btn-cancel").hide();
 					$(".btn-finish").hide();
