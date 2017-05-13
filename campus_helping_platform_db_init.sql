@@ -157,9 +157,9 @@ CREATE TABLE `campushelpingplatform`.`admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `campushelpingplatform`.`admin`
-(`uid`,`name`,`pwd`,`privilegeid`)
+(`uid`,`email`,`name`,`pwd`,`privilegeid`)
 VALUES
-('admin_default','administrator','P@ssw0rd','priv_admin_default');
+('admin_default','administrator@gpnu.edu.cn','administrator','P@ssw0rd','priv_default');
 
 DROP TABLE IF EXISTS `campushelpingplatform`.`adminloginlog`;
 CREATE TABLE `campushelpingplatform`.`adminloginlog` (
@@ -191,7 +191,7 @@ DROP TABLE IF EXISTS `campushelpingplatform`.`resource`;
 CREATE TABLE `campushelpingplatform`.`resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) NOT NULL,
-  `name` varchar(45) DEFAULT NULL,
+  `name` varchar(1024) DEFAULT NULL,
   `type` tinyint(4) NOT NULL,
   `value` varchar(1024) NOT NULL,
   `isvalid` tinyint(4) NOT NULL DEFAULT '1',
@@ -273,7 +273,7 @@ CREATE TABLE `campushelpingplatform`.`qualificationrequest` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `campushelpingplatform`.`location`;
-CREATE TABLE `location` (
+CREATE TABLE `campushelpingplatform`.`location` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` varchar(128) NOT NULL,
   `name` varchar(30) NOT NULL,
@@ -291,7 +291,7 @@ CREATE TABLE `location` (
 DROP TABLE IF EXISTS `campushelpingplatform`.`problem`;
 CREATE TABLE `campushelpingplatform`.`problem` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `uid` VARCHAR(128) NOT NULL AUTO_INCREMENT,
+  `uid` VARCHAR(128) NOT NULL,
   `createuserid` VARCHAR(128) NOT NULL,
   `locationid` VARCHAR(128) NOT NULL,
   `problemtypeid` VARCHAR(128) NOT NULL,
@@ -437,7 +437,7 @@ ADD CONSTRAINT `fk_location_createuser`
 
 ALTER TABLE `campushelpingplatform`.`complaintrequest` 
 ADD INDEX `fk_complaintrequest_createuser_idx` (`replycreateuserid` ASC),
-ADD INDEX `fk_complaintrequest_user_idx` (`userid` ASC);
+ADD INDEX `fk_complaintrequest_user_idx` (`userid` ASC),
 ADD INDEX `fk_complaintrequest_problem_idx` (`problemid` ASC);
 ALTER TABLE `campushelpingplatform`.`complaintrequest` 
 ADD CONSTRAINT `fk_complaintrequest_createuser`
