@@ -43,4 +43,24 @@ public class FileOperationUtil {
 			return false;
 		}
 	}
+	
+	public static boolean writeToFile(File sourceFile, String filePath, String fileName) {
+		File file = new File(filePath + fileName);
+		
+		try (FileOutputStream fop = new FileOutputStream(file)) {
+			InputStream is = new FileInputStream(sourceFile);
+			byte[] buf = new byte[1024];
+			int length = 0;
+
+			while (-1 != (length = is.read(buf))) {
+				fop.write(buf, 0, length);
+			}
+			is.close();
+			fop.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 }

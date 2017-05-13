@@ -55,6 +55,12 @@
 		</div>
 	</div>
 	<div class="row cl">
+		<label class="form-label col-xs-4 col-sm-3">申请附加附件：</label>
+		<div class="formControls col-xs-8 col-sm-9 resource-content">
+			<a tag="a-resource" title="下载附件" href="javascript:;" onClick="javascript:;" class="ml-5">无</a>
+		</div>
+	</div>
+	<div class="row cl">
 		<label class="form-label col-xs-4 col-sm-3">申请状态：</label>
 		<div class="formControls col-xs-8 col-sm-9">
 			<span id="span-qualification-status">状态</span>
@@ -136,6 +142,20 @@ function init_qualification(uid) {
 			$.each(content, function(index, value) {
 				$("#span-user-name").html(value.user.name);
 				$("#span-qualificaton-type").html(value.type.name);
+				if (value.resource == null || value.resource.length == 0) {
+					$(".resource-content").empty();
+					$(".resource-content").html("无");
+				} else {
+					$.each(value.resource, function(idx, v) {
+						var tmp = $("[tag=\"a-resource\"]:last");
+						tmp.attr("onclick", "downloadFile('" + v.uid + "')");
+						tmp.text(" " + v.name + " ");
+						if (idx < value.resource.length - 1) {
+							tmp = tmp.clone();
+							tmp.appendTo($.find(".resource-content"));
+						}
+					});
+				}
 				if (value.requesttime <= 0) {
 					$("#span-qualification-time").html("不可用");
 				} else {
@@ -186,7 +206,11 @@ function init_qualification(uid) {
 	}
 	});
 }
-</script> 
+function downloadFile(uid) {
+	var param = {uid: uid};
+	$.download("resource-get.action", param, "post");
+}
+</script>
 <!--/请在上方写此页面业务相关的脚本-->
 </body>
 </html>

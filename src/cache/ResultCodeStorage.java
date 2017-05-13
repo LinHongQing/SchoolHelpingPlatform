@@ -27,6 +27,7 @@ public final class ResultCodeStorage {
 	
 	public static final String code_err_illegal_operation = "00015";
 	public static final String code_err_unapplicable_problem_type = "00016";
+	public static final String code_err_file_operate_error = "00017";
 	
 	public static final String code_err_generic_server_internal_exception = "00500";
 	private static Map<String, String> resultCodeStorage = new HashMap<String, String>();
@@ -48,6 +49,7 @@ public final class ResultCodeStorage {
 		resultCodeStorage.put(code_err_session_hibernate_empty, "hibernate session 未初始化");
 		resultCodeStorage.put(code_err_illegal_operation, "非法操作");
 		resultCodeStorage.put(code_err_unapplicable_problem_type, "不适用的问题类型");
+		resultCodeStorage.put(code_err_file_operate_error, "文件操作异常");
 		resultCodeStorage.put(code_err_generic_server_internal_exception, "通用的服务器内部错误");
 	}
 	

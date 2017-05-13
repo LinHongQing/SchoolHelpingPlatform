@@ -16,7 +16,7 @@
             <column name="type" not-null="true" />
         </property>
         <property name="name" type="java.lang.String">
-            <column name="name" length="45" />
+            <column name="name" length="1024" />
         </property>
         <property name="value" type="java.lang.String">
             <column name="value" length="1024" not-null="true" />

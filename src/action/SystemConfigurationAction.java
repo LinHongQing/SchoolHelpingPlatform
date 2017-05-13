@@ -142,7 +142,7 @@ public class SystemConfigurationAction extends BaseAction implements
 						throw new IllegalParameterException("chatsystempath 参数无效");
 					
 					Configurations.setChatSystemPath(chatsystempath);
-					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_key), Configurations.config_platform_property_file_name);
+					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_conf_key), Configurations.config_platform_property_file_name);
 					
 					TransferResultInfo<String> rs = new TransferResultInfo<String>();
 					rs.setMsgType(ResultCodeStorage.type_success);
@@ -167,7 +167,7 @@ public class SystemConfigurationAction extends BaseAction implements
 						throw new IllegalParameterException("defaultuserroleuid 参数无效");
 					
 					Configurations.setDefaultUserRoleUid(defaultuserroleuid);
-					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_key), Configurations.config_platform_property_file_name);
+					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_conf_key), Configurations.config_platform_property_file_name);
 					
 					TransferResultInfo<String> rs = new TransferResultInfo<String>();
 					rs.setMsgType(ResultCodeStorage.type_success);
@@ -210,7 +210,7 @@ public class SystemConfigurationAction extends BaseAction implements
 					Configurations.setCreditValueChangeForCreator(Integer.parseInt(creditvaluechangeforcreator));
 					Configurations.setCreditValueChangeForSolver(Integer.parseInt(creditvaluechangeforsolver));
 					Configurations.setDefaultUserCreditValue(Integer.parseInt(defaultusercreditvalue));
-					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_key), Configurations.config_platform_property_file_name);
+					PlatformService.writeConfigToFile(System.getProperty(Configurations.config_platform_property_conf_key), Configurations.config_platform_property_file_name);
 					
 					TransferResultInfo<String> rs = new TransferResultInfo<String>();
 					rs.setMsgType(ResultCodeStorage.type_success);

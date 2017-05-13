@@ -21,9 +21,10 @@ public class InitListener implements ServletContextListener {
 		// TODO Auto-generated method stub
 		System.out.println("context 已创建");
 		String webAppRootKey = sce.getServletContext().getRealPath("/");
-		System.setProperty("ssm.root", webAppRootKey);
-		System.setProperty("ssm.conf", webAppRootKey + "WEB-INF" + File.separator + "conf" + File.separator);
-		PlatformService.getConfigFromFile(System.getProperty(Configurations.config_platform_property_key), Configurations.config_platform_property_file_name);
+		System.setProperty(Configurations.config_platform_property_webroot_key, webAppRootKey);
+		System.setProperty(Configurations.config_platform_property_conf_key, webAppRootKey + "WEB-INF" + File.separator + "conf" + File.separator);
+		System.setProperty(Configurations.config_platform_property_upload_key, webAppRootKey + "WEB-INF" + File.separator + "upload" + File.separator);
+		PlatformService.getConfigFromFile(System.getProperty(Configurations.config_platform_property_conf_key), Configurations.config_platform_property_file_name);
 	}
 
 }

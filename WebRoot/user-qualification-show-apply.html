@@ -76,7 +76,7 @@
 			认证申请
 		</div>
 		<div class="panel-body qualification-apply" style="display:none">
-			<form action="" method="post" style="padding: 20px" class="form form-horizontal" id="form-qualification">
+			<form enctype="multipart/form-data" method="post" style="padding: 20px" class="form form-horizontal" id="form-qualification">
 			<div class="row cl">
 				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>申请类型：</label>
 				<div class="formControls col-xs-8 col-sm-9">
@@ -92,6 +92,15 @@
 				<div class="formControls col-xs-8 col-sm-9">
 					<textarea id="description" name="description" cols="" rows="" class="textarea" placeholder="说一下为什么想申请..." onKeyUp="$.Huitextarealength(this,500)"></textarea>
 					<p class="textarea-numberbar"><em class="textarea-length">0</em>/500</p>
+				</div>
+			</div>
+			<div class="row cl">
+				<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>附件：</label>
+				<div class="formControls col-xs-8 col-sm-9">
+					<span class="btn-upload form-group">
+						<input class="input-text upload-url radius" type="text" name="filename" id="filename" readonly><a href="javascript:void();" class="btn btn-primary radius"><i class="iconfont">&#xf0020;</i> 浏览文件</a>
+						<input type="file" multiple name="file" class="input-file">
+					</span>
 				</div>
 			</div>
 			<div class="row cl">
@@ -127,6 +136,15 @@ $(document).ready(function() {
 		else
 			return true;
 	}, "请选择认证类型");
+	$.validator.addMethod("checkFileSize", function(value, element, param) {
+		var fileSize = element.files[0].size;
+		var maxSize = 10 * 1024 * 1024;
+		if(fileSize > maxSize){
+			return false;
+		} else {
+			return true;
+		}
+	}, "请上传文件大小小于 10M 的文件");
 	
 	$("#form-qualification").validate({
 		rules: {
@@ -136,19 +154,26 @@ $(document).ready(function() {
 			},
 			"description": {
 				required: true,
+			},
+			"file": {
+				required: true,
+				checkFileSize: true
 			}
 		},
 		messages: {
+			"file": {
+				required: "您必须上传证明文件",
+				checkFileSize: "文件的大小不能大于 10M"
+			},
 			"description": "请输入内容"
 		},
 		onkeyup: false,
 		focusCleanup: true,
 		success: "valid",
 		submitHandler: function(form) {
-			var params = $("#form-qualification").serialize();
-			$.ajax({
+			var option = {
 				type: "post",
-				data: params,
+				headers: {"ClientCallMode" : "ajax"},
 				dataType: "json",
 				url: "qualification-apply.action",
 				success: function(result) {
@@ -164,7 +189,8 @@ $(document).ready(function() {
                 error: function() {
 					layer.msg("connection error!",{icon:2,time:1000});
 				}
-			});
+			}
+			$("#form-qualification").ajaxSubmit(option);
 		}
 	});
 });

@@ -68,7 +68,24 @@
 			}
 		}
 	});
-})(jQuery); 
+})(jQuery);
+
+//Ajax 文件下载
+(function($){    // 获得url和data
+	$.download = function(url, data, method) {
+		if ( url && data ){ 
+			// data 是 string 或者 array/object
+			data = typeof data == 'string' ? data : jQuery.param(data);        // 把参数组装成 form的  input
+			var inputs = '';
+			jQuery.each(data.split('&'), function() { 
+				var pair = this.split('=');
+				inputs += '<input type="hidden" name="' + pair[0] + '" value="' + pair[1] + '" />'; 
+			});        // request发送请求
+			jQuery('<form action="'+ url + '" method="' + (method||'post') + '">' + inputs + '</form>')
+				.appendTo('body').submit().remove();
+		}
+	};
+})(jQuery);
 
 function unixTimestamptoDateString(unix) {
 	return $.myTime.UnixToDate(unix, true, 8);

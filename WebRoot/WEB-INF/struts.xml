@@ -90,6 +90,9 @@
 		<action name="sysconf-*" class="action.SystemConfigurationAction" method="{1}">
 			<interceptor-ref name="for-admins"></interceptor-ref>
 		</action>
+		<action name="resource-*" class="action.ResourceAction" method="{1}">
+			<interceptor-ref name="for-admins"></interceptor-ref>
+		</action>
 	</package>
 	<package name="user" extends="struts-default" namespace="/">
 		<interceptors>

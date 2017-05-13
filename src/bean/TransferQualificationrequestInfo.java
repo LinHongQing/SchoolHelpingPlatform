@@ -1,10 +1,13 @@
 package bean;
 
+import java.util.List;
+
 public class TransferQualificationrequestInfo {
 	private String uid;
 	private TransferUserInfo user;
 	private TransferQualificationtypeInfo type;
-	private String resourceuid;
+	private String strresourceuid;
+	private List<TransferResourceInfo> resource;
 	private String description;
 	private int requesttime;
 	private String requestip;
@@ -31,11 +34,17 @@ public class TransferQualificationrequestInfo {
 	public void setType(TransferQualificationtypeInfo type) {
 		this.type = type;
 	}
-	public String getResourceuid() {
-		return resourceuid;
+	public String getStrresourceuid() {
+		return strresourceuid;
 	}
-	public void setResourceuid(String resourceuid) {
-		this.resourceuid = resourceuid;
+	public void setStrresourceuid(String resourceuid) {
+		this.strresourceuid = resourceuid;
+	}
+	public List<TransferResourceInfo> getResource() {
+		return resource;
+	}
+	public void setResource(List<TransferResourceInfo> resource) {
+		this.resource = resource;
 	}
 	public String getDescription() {
 		return description;
@@ -87,13 +96,13 @@ public class TransferQualificationrequestInfo {
 	}
 	@Override
 	public String toString() {
-		return "TransferQualificationrequestDetailInfo [uid=" + uid + ", user="
-				+ user + ", type=" + type + ", resourceuid=" + resourceuid
-				+ ", description=" + description + ", requesttime="
-				+ requesttime + ", requestip=" + requestip
-				+ ", checkingstatus=" + checkingstatus + ", checkingtype="
-				+ checkingtype + ", checkingtime=" + checkingtime
-				+ ", checkingip=" + checkingip + ", checkinguser="
-				+ checkinguser + "]";
+		return "TransferQualificationrequestInfo [uid=" + uid + ", user="
+				+ user + ", type=" + type + ", strresourceuid="
+				+ strresourceuid + ", resource=" + resource + ", description="
+				+ description + ", requesttime=" + requesttime + ", requestip="
+				+ requestip + ", checkingstatus=" + checkingstatus
+				+ ", checkingtype=" + checkingtype + ", checkingtime="
+				+ checkingtime + ", checkingip=" + checkingip
+				+ ", checkinguser=" + checkinguser + "]";
 	}
 }

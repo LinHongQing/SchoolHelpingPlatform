@@ -309,13 +309,14 @@ public class UserAction extends BaseAction implements ServletRequestAware, Servl
 			switch (op) {
 			case save: {
 				switch (ui) {
-				case Configurations.action_general_UI_USER:
-					break;
 				case Configurations.action_general_UI_ADMIN:
 					checkAdminLogin();
 					checkPermission();
+					pwd = Configurations.db_user_default_pwd;
 					break;
+				case Configurations.action_general_UI_USER:
 				default:
+					checkUserLogin();
 					break;
 				}
 				if (name == null || "".equals(name))

@@ -227,7 +227,7 @@ public class QualificationrequestServiceImpl implements
 						type.setName(qualificationRequest.getQualificationtype().getName());
 						q.setType(type);
 					}
-					q.setResourceuid(qualificationRequest.getResourceid());
+					q.setStrresourceuid(qualificationRequest.getResourceid());
 					q.setDescription(qualificationRequest.getDescription());
 					q.setRequestip(qualificationRequest.getRequestip());
 					q.setRequesttime(qualificationRequest.getRequesttime());

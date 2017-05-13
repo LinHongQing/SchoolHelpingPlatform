@@ -1,28 +1,35 @@
 package action;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import com.google.gson.Gson;
 
 import service.QualificationrequestService;
+import service.ResourceService;
 import service.UserService;
 import util.DbUidGeneratorUtil;
+import util.FileOperationUtil;
 import util.StringUtil;
 import util.TimeUtil;
 import bean.TransferOnlineUserBasicInfo;
 import bean.TransferQualificationrequestInfo;
+import bean.TransferResourceInfo;
 import bean.TransferResultInfo;
 import cache.Configurations;
 import cache.PlatformStatistics;
 import cache.ResultCodeStorage;
+import exception.FileOperateException;
 import exception.IllegalOperationException;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
@@ -46,6 +53,8 @@ public class QualificationAction extends BaseAction implements
 	private String uid;
 	private String useruid;
 	private String typeuid;
+	private String filename;
+	private File file;
 	private String resourceuid;
 	private String description;
 	private String requesttime;
@@ -79,6 +88,22 @@ public class QualificationAction extends BaseAction implements
 
 	public void setTypeuid(String typeuid) {
 		this.typeuid = typeuid;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 	public String getResourceuid() {
@@ -237,7 +262,33 @@ public class QualificationAction extends BaseAction implements
 					throw new IllegalParameterException("typeuid 参数不能为空");
 				if (description == null || "".equals(description))
 					throw new IllegalParameterException("description 参数不能为空");
+				if (filename == null || "".equals(filename))
+					throw new IllegalParameterException("filename 参数异常");
+				if (file == null)
+					throw new IllegalParameterException("上传文件异常");
 				TransferOnlineUserBasicInfo user = (TransferOnlineUserBasicInfo) request.getSession().getAttribute(Configurations.session_online_user_key);
+				
+				String sourceFileName = FilenameUtils.getName(filename);
+				String sourceFileExtension = "." + sourceFileName.substring(sourceFileName.lastIndexOf(".") + 1);
+				String newFileName = user.getUser().getUid() + Configurations.string_filename_section_split + TimeUtil.getNowTimeStamp();
+				String targetPath = System.getProperty(Configurations.config_platform_property_upload_key);
+				if (!FileOperationUtil.writeToFile(file, System.getProperty(Configurations.config_platform_property_upload_key), newFileName + sourceFileExtension)) {
+					throw new FileOperateException("文件写入失败");
+				}
+				
+				String newResourceUid = DbUidGeneratorUtil.generateResourceUid(Configurations.db_resource_type_file);
+				resourceService.initParameters();
+				resourceService.setParameters(ResourceService.set_uid, newResourceUid);
+				resourceService.setParameters(ResourceService.set_type, String.valueOf(Configurations.db_resource_type_file));
+				resourceService.setParameters(ResourceService.set_name, sourceFileName);
+				resourceService.setParameters(ResourceService.set_value, targetPath + newFileName + sourceFileExtension);
+				TransferResultInfo<?> rs_resource = resourceService.insert();
+				if (!ResultCodeStorage.type_success.equals(rs_resource.getMsgType())) {
+					sendMsgtoWeb(rs_resource);
+					return;
+				}
+				
+				
 				qualificationrequestService.setParameters(QualificationrequestService.set_uid,
 						DbUidGeneratorUtil.generateQualificationrequest(PlatformStatistics.getTodayQualificationRequestCount()));
 				qualificationrequestService.setParameters(QualificationrequestService.set_userUid, user.getUser().getUid());
@@ -245,6 +296,7 @@ public class QualificationAction extends BaseAction implements
 				qualificationrequestService.setParameters(QualificationrequestService.set_requestTime, TimeUtil.getNowTimeStamp());
 				qualificationrequestService.setParameters(QualificationrequestService.set_checkingStatus,
 						String.valueOf(Configurations.db_qualificationrequest_checkingstatus_waiting));
+				qualificationrequestService.setParameters(QualificationrequestService.set_resourceUid, newResourceUid);
 				TransferResultInfo<?> rs = qualificationrequestService.insert();
 				if (rs.getMsgType().equals(ResultCodeStorage.type_success))
 					PlatformStatistics.addOneValuetoStatistic(PlatformStatistics.getTodayQualificationRequestCount());
@@ -344,6 +396,41 @@ public class QualificationAction extends BaseAction implements
 						if (uid == null || "".equals(uid))
 							throw new IllegalParameterException("uid 参数不能为空");
 						TransferResultInfo<?> rs = qualificationrequestService.find(QualificationrequestService.find_detail);
+						if (!ResultCodeStorage.type_success.equals(rs.getMsgType())) {
+							sendMsgtoWeb(rs);
+							return;
+						}
+						@SuppressWarnings("unchecked")
+						List<TransferQualificationrequestInfo> list_qualreq = (List<TransferQualificationrequestInfo>) rs.getMsgContent();
+						List<TransferResourceInfo> list_resource = new ArrayList<TransferResourceInfo>();
+						String str_resourceUid = null;
+						for (TransferQualificationrequestInfo transferQualificationrequestInfo : list_qualreq) {
+							str_resourceUid = transferQualificationrequestInfo.getStrresourceuid();
+							if (str_resourceUid != null) {
+								String[] resourceUids = str_resourceUid.split(Configurations.string_split);
+								for (String string : resourceUids) {
+									resourceService.initParameters();
+									resourceService.setParameters(ResourceService.set_uid, string);
+									TransferResultInfo<?> rs_resource = resourceService.find();
+									if (!ResultCodeStorage.type_success.equals(rs_resource.getMsgType())) {
+										sendMsgtoWeb(rs_resource);
+										return;
+									}
+									TransferResourceInfo resource = new TransferResourceInfo();
+									@SuppressWarnings("unchecked")
+									List<TransferResourceInfo> rss = (List<TransferResourceInfo>) rs_resource.getMsgContent();
+									for (TransferResourceInfo transferResourceInfo : rss) {
+										resource.setUid(transferResourceInfo.getUid());
+										resource.setName(transferResourceInfo.getName());
+										break;
+									}
+									list_resource.add(resource);
+								}
+							}
+							transferQualificationrequestInfo.setResource(list_resource);
+							transferQualificationrequestInfo.setStrresourceuid(null);
+							break;
+						}
 						sendMsgtoWeb(rs);
 					}
 					break;
@@ -368,6 +455,15 @@ public class QualificationAction extends BaseAction implements
 						if (uid == null || "".equals(uid))
 							throw new IllegalParameterException("uid 不能为空");
 						TransferResultInfo<?> rs = qualificationrequestService.find(QualificationrequestService.find_detail);
+						if (!ResultCodeStorage.type_success.equals(rs.getMsgType())) {
+							sendMsgtoWeb(rs);
+							return;
+						}
+						@SuppressWarnings("unchecked")
+						List<TransferQualificationrequestInfo> list_qualreq = (List<TransferQualificationrequestInfo>) rs.getMsgContent();
+						for (TransferQualificationrequestInfo transferQualificationrequestInfo : list_qualreq) {
+							transferQualificationrequestInfo.setStrresourceuid(null);
+						}
 						sendMsgtoWeb(rs);
 					}
 					break;
@@ -405,6 +501,12 @@ public class QualificationAction extends BaseAction implements
 			rs.setMsgType(ResultCodeStorage.type_error);
 			rs.setMsgCode(ResultCodeStorage.code_err_invalid_access);
 			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_invalid_access, e.getMessage()));
+			sendMsgtoWeb(rs);
+		} catch (FileOperateException e) {
+			TransferResultInfo<String> rs = new TransferResultInfo<String>();
+			rs.setMsgType(ResultCodeStorage.type_error);
+			rs.setMsgCode(ResultCodeStorage.code_err_file_operate_error);
+			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_file_operate_error, e.getMessage()));
 			sendMsgtoWeb(rs);
 		} catch (Exception e) {
 			// TODO: handle exception

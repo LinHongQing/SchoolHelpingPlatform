@@ -51,12 +51,16 @@ public final class Configurations {
 	
 	public static final int int_invalid = -1;
 	public static final String string_split = ",";
+	public static final String string_filename_section_split = "_";
 	
-	public static final String config_platform_property_key = "shp.conf";
+	public static final String config_platform_property_webroot_key = "shp.root";
+	public static final String config_platform_property_conf_key = "shp.conf";
+	public static final String config_platform_property_upload_key = "shp.upload";
 	public static final String config_platform_property_file_name = "conf.json";
 	
 	public static final String db_admin_privilege_uid = "priv_default";
 	public static final String db_admin_default_admin_uid = "admin_default";
+	public static final String db_user_default_pwd = "P@ssw0rd";
 	
 	public static final short db_entry_invalid = 0;
 	public static final short db_entry_valid = 1;
@@ -75,6 +79,9 @@ public final class Configurations {
 	public static final int db_qualificationrequest_checkingstatus_pass = 1;
 	public static final int db_qualificationrequest_checkingtype_auto = 0;
 	public static final int db_qualificationrequest_checkingtype_manual = 1;
+	
+	public static final int db_resource_type_img = 1;
+	public static final int db_resource_type_file = 2;
 	
 	public static final String interceptor_string_authorization_success = "success";
 	public static final String interceptor_string_authorization_fail = "fail";
