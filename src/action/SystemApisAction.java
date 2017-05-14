@@ -131,7 +131,7 @@ public class SystemApisAction extends BaseAction implements
 				TransferApiUserInfo from = new TransferApiUserInfo();
 				for (TransferUserInfo transferUserInfo : list_from) {
 					from.setUsrUid(transferUserInfo.getUid());
-					from.setUsrNickname(transferUserInfo.getNickname() == null ? "" : transferUserInfo.getNickname());
+					from.setUsrNickname(transferUserInfo.getNickname() == null ? transferUserInfo.getName() : transferUserInfo.getNickname());
 					from.setUsrImgResourcePath("");
 				}
 				userService.initParameters();
@@ -146,7 +146,7 @@ public class SystemApisAction extends BaseAction implements
 				TransferApiUserInfo to = new TransferApiUserInfo();
 				for (TransferUserInfo transferUserInfo : list_to) {
 					to.setUsrUid(transferUserInfo.getUid());
-					to.setUsrNickname(transferUserInfo.getNickname() == null ? "" : transferUserInfo.getNickname());
+					to.setUsrNickname(transferUserInfo.getNickname() == null ? transferUserInfo.getName() : transferUserInfo.getNickname());
 					to.setUsrImgResourcePath("");
 				}
 				Map<String, TransferApiUserInfo> rs_final_content = new HashMap<String, TransferApiUserInfo>();
