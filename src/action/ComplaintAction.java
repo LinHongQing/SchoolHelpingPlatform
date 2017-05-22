@@ -1,23 +1,29 @@
 package action;
 
+import java.io.File;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
 import service.ComplaintrequestService;
 import service.ProblemService;
+import service.ResourceService;
 import util.DbUidGeneratorUtil;
+import util.FileOperationUtil;
 import util.StringUtil;
 import util.TimeUtil;
 import bean.TransferComplaintrequestInfo;
 import bean.TransferOnlineUserBasicInfo;
 import bean.TransferProblemInfo;
+import bean.TransferResourceInfo;
 import bean.TransferResultInfo;
 
 import com.google.gson.Gson;
@@ -25,6 +31,7 @@ import com.google.gson.Gson;
 import cache.Configurations;
 import cache.PlatformStatistics;
 import cache.ResultCodeStorage;
+import exception.FileOperateException;
 import exception.IllegalOperationException;
 import exception.IllegalParameterException;
 import exception.NoLoginException;
@@ -52,6 +59,8 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 	private String createip;
 	private String problemuid;
 	private String description;
+	private String filename;
+	private File file;
 	private String resourceuid;
 	private String status;
 	private String replydescription;
@@ -109,6 +118,22 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 	public String getResourceuid() {
@@ -269,6 +294,32 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 					throw new IllegalParameterException("description 参数不能为空");
 				if (problemuid == null || "".equals(problemuid))
 					throw new IllegalParameterException("problemuid 参数不能为空");
+				if (filename == null || "".equals(filename))
+					throw new IllegalParameterException("filename 参数异常");
+				if (file == null)
+					throw new IllegalParameterException("上传文件异常");
+				TransferOnlineUserBasicInfo user = (TransferOnlineUserBasicInfo) request.getSession().getAttribute(Configurations.session_online_user_key);
+				
+				String sourceFileName = FilenameUtils.getName(filename);
+				String sourceFileExtension = "." + sourceFileName.substring(sourceFileName.lastIndexOf(".") + 1);
+				String newFileName = user.getUser().getUid() + Configurations.string_filename_section_split + TimeUtil.getNowTimeStamp();
+				String targetPath = System.getProperty(Configurations.config_platform_property_upload_key);
+				if (!FileOperationUtil.writeToFile(file, System.getProperty(Configurations.config_platform_property_upload_key), newFileName + sourceFileExtension)) {
+					throw new FileOperateException("文件写入失败");
+				}
+				
+				String newResourceUid = DbUidGeneratorUtil.generateResourceUid(Configurations.db_resource_type_file);
+				resourceService.initParameters();
+				resourceService.setParameters(ResourceService.set_uid, newResourceUid);
+				resourceService.setParameters(ResourceService.set_type, String.valueOf(Configurations.db_resource_type_file));
+				resourceService.setParameters(ResourceService.set_name, sourceFileName);
+				resourceService.setParameters(ResourceService.set_value, targetPath + newFileName + sourceFileExtension);
+				TransferResultInfo<?> rs_resource = resourceService.insert();
+				if (!ResultCodeStorage.type_success.equals(rs_resource.getMsgType())) {
+					sendMsgtoWeb(rs_resource);
+					return;
+				}
+				
 				problemService.initParameters();
 				problemService.setParameters(ProblemService.set_uid, problemuid);
 				TransferResultInfo<?> rs_problem = problemService.find(ProblemService.find_summary);
@@ -287,16 +338,19 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 					sendMsgtoWeb(rs_problem);
 					return;
 				}
-				TransferOnlineUserBasicInfo user = (TransferOnlineUserBasicInfo) request.getSession().getAttribute(Configurations.session_online_user_key);
+				
 				complaintrequestService.setParameters(ComplaintrequestService.set_uid,
 						DbUidGeneratorUtil.generateComplaintrequestUid(PlatformStatistics.getTodayComplaintRequestCount()));
 				complaintrequestService.setParameters(ComplaintrequestService.set_userUid, user.getUser().getUid());
 				complaintrequestService.setParameters(ComplaintrequestService.set_createIp, request.getRemoteAddr());
 				complaintrequestService.setParameters(ComplaintrequestService.set_createTime, TimeUtil.getNowTimeStamp());
+				complaintrequestService.setParameters(ComplaintrequestService.set_resourceUid, newResourceUid);
 				complaintrequestService.setParameters(ComplaintrequestService.set_status, String.valueOf(Configurations.db_complaintrequest_status_waiting));
 				TransferResultInfo<?> rs = complaintrequestService.insert();
+				if (rs.getMsgType().equals(ResultCodeStorage.type_success)) {
+					PlatformStatistics.addOneValuetoStatistic(PlatformStatistics.todayComplaintRequest);
+				}
 				sendMsgtoWeb(rs);
-				PlatformStatistics.addOneValuetoStatistic(PlatformStatistics.todayComplaintRequest);
 			}
 			break;
 			case op_process: {
@@ -385,6 +439,41 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 						if (uid == null || "".equals(uid))
 							throw new IllegalParameterException("uid 参数不能为空");
 						TransferResultInfo<?> rs = complaintrequestService.find(ComplaintrequestService.find_detail);
+						if (!ResultCodeStorage.type_success.equals(rs.getMsgType())) {
+							sendMsgtoWeb(rs);
+							return;
+						}
+						@SuppressWarnings("unchecked")
+						List<TransferComplaintrequestInfo> list_complaint = (List<TransferComplaintrequestInfo>) rs.getMsgContent();
+						List<TransferResourceInfo> list_resource = new ArrayList<TransferResourceInfo>();
+						String str_resourceUid = null;
+						for (TransferComplaintrequestInfo transferComplaintrequestInfo : list_complaint) {
+							str_resourceUid = transferComplaintrequestInfo.getStrresourceuid();
+							if (str_resourceUid != null) {
+								String[] resourceUids = str_resourceUid.split(Configurations.string_split);
+								for (String string : resourceUids) {
+									resourceService.initParameters();
+									resourceService.setParameters(ResourceService.set_uid, string);
+									TransferResultInfo<?> rs_resource = resourceService.find();
+									if (!ResultCodeStorage.type_success.equals(rs_resource.getMsgType())) {
+										sendMsgtoWeb(rs_resource);
+										return;
+									}
+									TransferResourceInfo resource = new TransferResourceInfo();
+									@SuppressWarnings("unchecked")
+									List<TransferResourceInfo> rss = (List<TransferResourceInfo>) rs_resource.getMsgContent();
+									for (TransferResourceInfo transferResourceInfo : rss) {
+										resource.setUid(transferResourceInfo.getUid());
+										resource.setName(transferResourceInfo.getName());
+										break;
+									}
+									list_resource.add(resource);
+								}
+							}
+							transferComplaintrequestInfo.setResource(list_resource);
+							transferComplaintrequestInfo.setStrresourceuid(null);
+							break;
+						}
 						sendMsgtoWeb(rs);
 					}
 					break;
@@ -453,6 +542,12 @@ public class ComplaintAction extends BaseAction implements ServletRequestAware,
 			rs.setMsgType(ResultCodeStorage.type_error);
 			rs.setMsgCode(ResultCodeStorage.code_err_invalid_access);
 			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_invalid_access, e.getMessage()));
+			sendMsgtoWeb(rs);
+		} catch (FileOperateException e) {
+			TransferResultInfo<String> rs = new TransferResultInfo<String>();
+			rs.setMsgType(ResultCodeStorage.type_error);
+			rs.setMsgCode(ResultCodeStorage.code_err_file_operate_error);
+			rs.setMsgContent(StringUtil.formatResultInfoMessage(ResultCodeStorage.code_err_file_operate_error, e.getMessage()));
 			sendMsgtoWeb(rs);
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -138,6 +138,9 @@ public class ComplaintrequestDaoImpl extends HibernateDaoSupport implements Comp
 			case description:
 				complaintRequest.setDescription(value);
 				break;
+			case resourceUid:
+				complaintRequest.setResourceid(value);
+				break;
 			case createTime:
 				complaintRequest.setCreatetime(Integer.valueOf(value));
 				break;
@@ -194,6 +197,9 @@ public class ComplaintrequestDaoImpl extends HibernateDaoSupport implements Comp
 				break;
 			case description:
 				complaintRequest.setDescription(value);
+				break;
+			case resourceUid:
+				complaintRequest.setResourceid(value);
 				break;
 			case createTime:
 				complaintRequest.setCreatetime(Integer.valueOf(value));

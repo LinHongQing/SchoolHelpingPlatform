@@ -21,7 +21,7 @@
 </head>
 <body>
 <article class="page-container">
-	<form action="" method="post" style="padding: 20px" class="form form-horizontal" id="form-complaint">
+	<form enctype="multipart/form-data" method="post" style="padding: 20px" class="form form-horizontal" id="form-complaint">
 		<input type="hidden" name="problemuid" id="uid">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">投诉问题标题：</label>
@@ -52,6 +52,17 @@
 			<div class="formControls col-xs-8 col-sm-9">
 				<textarea id="description" name="description" cols="" rows="" class="textarea" placeholder="说点什么..." onKeyUp="$.Huitextarealength(this,500)"></textarea>
 				<p class="textarea-numberbar"><em class="textarea-length">0</em>/500</p>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>截图证明文件：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="btn-upload form-group">
+					<input class="input-text upload-url radius" type="text" name="filename" id="filename" readonly><a href="javascript:void();" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+					<input type="file" multiple name="file" class="input-file">
+				</span>
+				<br>
+				<span class="c-red">*请将证据页面截图打包, 并在此处上传</span>
 			</div>
 		</div>
 		<div class="row cl">
@@ -89,28 +100,44 @@ $(document).ready(function(){
 		return;
 	}
 	
+	$.validator.addMethod("checkFileSize", function(value, element, param) {
+		var fileSize = element.files[0].size;
+		var maxSize = 10 * 1024 * 1024;
+		if(fileSize > maxSize || fileSize <= 0){
+			return false;
+		} else {
+			return true;
+		}
+	}, "文件大小不符合要求(大于 0 KB 且小于 10 MB)");
+	
 	$("#form-complaint").validate({
 		rules: {
 			"description": {
 				required: true
+			},
+			"file": {
+				required: true,
+				checkFileSize: true
 			}
 		},
 		messages: {
+			"file": {
+				required: "您必须上传截图证据文件",
+			},
 			"description": "请输入内容"
 		},
 		onkeyup: false,
 		focusCleanup: true,
 		success: "valid",
 		submitHandler: function(form) {
-			var params = $("#form-complaint").serialize();
-			$.ajax({
+			var option = {
 				type: "post",
-				data: params,
+				headers: {"ClientCallMode" : "ajax"},
 				dataType: "json",
 				url: "complaint-request.action",
 				success: function(result) {
 					if (result.msgType == "success") {
-						layer.msg("完成投诉", {icon: 1, time: 1000});
+						layer.msg("投诉提交成功", {icon: 1, time: 1000});
 					} else {
 						layer.msg("失败<br>错误代码:" + result.msgCode + "<br>内容:" + result.msgContent, {
 							icon : 2,
@@ -121,7 +148,8 @@ $(document).ready(function(){
                 error: function() {
 					layer.msg("connection error!",{icon:2,time:1000});
 				}
-			});
+			}
+			$("#form-complaint").ajaxSubmit(option);
 		}
 	});
 	

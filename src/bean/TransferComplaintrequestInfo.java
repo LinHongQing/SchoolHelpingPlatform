@@ -1,5 +1,7 @@
 package bean;
 
+import java.util.List;
+
 public class TransferComplaintrequestInfo {
 	private String uid;
 	private TransferUserInfo user;
@@ -7,7 +9,8 @@ public class TransferComplaintrequestInfo {
 	private String createip;
 	private TransferProblemInfo problem;
 	private String description;
-	private String resourceuid;
+	private String strresourceuid;
+	private List<TransferResourceInfo> resource;
 	private short status;
 	private String replydescription;
 	private String replyresourceuid;
@@ -50,11 +53,17 @@ public class TransferComplaintrequestInfo {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getResourceuid() {
-		return resourceuid;
+	public String getStrresourceuid() {
+		return strresourceuid;
 	}
-	public void setResourceuid(String resourceuid) {
-		this.resourceuid = resourceuid;
+	public void setStrresourceuid(String strresourceuid) {
+		this.strresourceuid = strresourceuid;
+	}
+	public List<TransferResourceInfo> getResource() {
+		return resource;
+	}
+	public void setResource(List<TransferResourceInfo> resource) {
+		this.resource = resource;
 	}
 	public short getStatus() {
 		return status;
@@ -97,10 +106,11 @@ public class TransferComplaintrequestInfo {
 		return "TransferComplaintrequestInfo [uid=" + uid + ", user=" + user
 				+ ", createtime=" + createtime + ", createip=" + createip
 				+ ", problem=" + problem + ", description=" + description
-				+ ", resourceuid=" + resourceuid + ", status=" + status
-				+ ", replydescription=" + replydescription
-				+ ", replyresourceuid=" + replyresourceuid + ", replycreateip="
-				+ replycreateip + ", replycreatetime=" + replycreatetime
-				+ ", replycreateuser=" + replycreateuser + "]";
+				+ ", strresourceuid=" + strresourceuid + ", resource="
+				+ resource + ", status=" + status + ", replydescription="
+				+ replydescription + ", replyresourceuid=" + replyresourceuid
+				+ ", replycreateip=" + replycreateip + ", replycreatetime="
+				+ replycreatetime + ", replycreateuser=" + replycreateuser
+				+ "]";
 	}
 }

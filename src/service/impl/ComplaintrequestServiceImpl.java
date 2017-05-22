@@ -193,7 +193,7 @@ public class ComplaintrequestServiceImpl implements ComplaintrequestService {
 					c.setDescription(complaintRequest.getDescription());
 					c.setCreatetime(complaintRequest.getCreatetime());
 					c.setCreateip(complaintRequest.getCreateip());
-					c.setResourceuid(complaintRequest.getResourceid());
+					c.setStrresourceuid(complaintRequest.getResourceid());
 					c.setStatus(complaintRequest.getStatus());
 					c.setReplydescription(complaintRequest.getReplydescription());
 					c.setReplyresourceuid(complaintRequest.getReplyresourceid());
